@@ -1,0 +1,65 @@
+﻿@page "/test"
+
+<h3>TestPage</h3>
+
+@if (ModalWindowOpen)
+{
+    <ProductModal Id="@ModalId" OnChange="@(() => StateHasChanged())" OnClose="@OnModalClose" />
+}
+@if (PictureWindowOpen)
+{
+    <PictureModal Id="@ModalId" OnClose="@OnModalPictureClose" />
+}
+<button type="button" class="btn btn-primary" @onclick="@(() => OpenModal(15))">
+    Посмотреть больше
+</button>
+<button type="button" class="btn btn-primary" @onclick="@(() => OpenPictureModal(15))">
+    Посмотреть картинку
+</button>
+
+
+
+@code {
+    [Parameter]
+    public EventCallback OnModalOpen { get; set; }
+
+    public bool ModalWindowOpen { get; set; }
+    public bool PictureWindowOpen { get; set; }
+    public int ModalId { get; set; } = 15;
+
+    private void OnModalClose()
+    {
+        ModalWindowOpen = false;
+        StateHasChanged();
+    }
+
+    private void OpenModal(int id)
+    {
+        ModalId = id;
+        ModalWindowOpen = true;
+        StateHasChanged();
+    }
+
+    private Task ModalOpen()
+    {
+        return OnModalOpen.InvokeAsync();
+    }
+
+    private void OnModalPictureClose()
+    {
+        PictureWindowOpen = false;
+        StateHasChanged();
+    }
+
+    private void OpenPictureModal(int id)
+    {
+        ModalId = id;
+        PictureWindowOpen = true;
+        StateHasChanged();
+    }
+
+    private Task PictureModalOpen()
+    {
+        return OnModalOpen.InvokeAsync();
+    }
+}

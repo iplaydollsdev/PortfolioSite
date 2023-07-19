@@ -1,0 +1,64 @@
+﻿@inject IProduct productData
+@inject ICategory categoryData
+@inject ICart cartData
+
+@if (Id != 0)
+{
+    <!-- Модальное окно -->
+    <div class="modal fade show" id="PicModal@Id" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog" @onclick="@ModalCloseOnOutsideClick">
+        <button class="close" @onclick="@ModalClose"><i class="oi oi-x"></i></button>
+        <div class="modal-dialog" style="max-width: 90vh; max-height: 90vh;">
+            <div class="modal-content" @onmouseover="MouseIn" @onmouseout="MouseOut">
+                <!-- Тело модального окна -->
+                <div class="modal-body">
+                    <div class="product-img">
+                        <img src="@Image" alt="product_@Id" style="height: 90vh;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string? Image { get; set; }
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public bool IsInside { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var product = await productData.GetProduct(Id);
+        Image = product.Image;
+    }
+
+    private Task ModalClose()
+    {
+        return OnClose.InvokeAsync();
+    }
+    private Task ModalCloseOnOutsideClick()
+    {
+        if (IsInside == false)
+        {
+            return OnClose.InvokeAsync();
+        }
+
+        return (new EventCallback {}).InvokeAsync();
+    }
+
+    private void MouseIn()
+    {
+        IsInside = true;
+    }
+    private void MouseOut()
+    {
+        IsInside = false;
+    }
+}

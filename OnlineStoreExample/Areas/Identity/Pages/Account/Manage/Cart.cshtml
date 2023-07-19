@@ -1,0 +1,41 @@
+﻿@page
+@model CartModel
+@{
+    ViewData["Title"] = "Корзина";
+    ViewData["ActivePage"] = ManageNavPages.Cart;
+}
+
+<h3>@ViewData["Title"]</h3>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Всего</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model?.Products?.Count > 0)
+                {
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td><a href="@Url.Action("ProductDetails", new { id = product.Id })"><img src="@product.Image" alt="@product.Name" /></a> @product.Name</td>
+                            <td>@*@product.Quantity*@</td>
+                            <td>@product.Price</td>
+                            <td>@*@product.Quantity * product.Price*@</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <h4>Подитог: @Model?.Subtotal</h4>
+        <h4>Доставка: @Model?.Shipping</h4>
+        <h4>Налоги: @Model?.Tax</h4>
+        <h4>Итого: @Model?.Total</h4>
+        <a href="@Url.Action("Checkout")" class="btn btn-primary">Заказать</a>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Components.Web
+@namespace OnlineStoreExample.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>OnlineStoreExample</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" asp-append-version="true" />
+    <link href="css/site.css" rel="stylesheet" asp-append-version="true" />
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="stylesheet" href="css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="css/responsive.css" asp-append-version="true">
+
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body>
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+@*    <script src="_framework/blazor.server.js"></script>*@
+    <script src="_framework/blazor.server.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            configureSignalR: function (builder) {
+                let c = builder.build();
+                c.serverTimeoutInMilliseconds = 30000;
+                c.keepAliveIntervalInMilliseconds = 15000;
+                builder.build = () => {
+                    return c;
+                };
+            }
+        });
+    </script>
+    <script>
+        window.copyTextToClipboard = function (text) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>

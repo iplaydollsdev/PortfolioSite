@@ -1,0 +1,157 @@
+﻿@page "/product/add"
+@page "/product/edit/{Id:int}"
+@inject NavigationManager NavigationManager
+@inject IProduct productData
+@inject ICategory categoryData
+@inject IConfiguration config
+
+<h1>@Title Товар</h1>
+<hr />
+<EditForm Model="@product" OnValidSubmit="SaveProduct">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Название</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.Name" />
+        </div>
+        <ValidationMessage For="@(() => product.Name)" />
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Описание</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.Description" />
+        </div>
+        <ValidationMessage For="@(() => product.Description)" />
+    </div>
+    <div class="mb-3">
+        <label for="Price" class="form-label">Цена</label>
+        <div class="col-md-4">
+            <InputNumber class="form-control" @bind-Value="product.Price" />
+        </div>
+        <ValidationMessage For="@(() => product.Price)" />
+    </div>
+    <div class="mb-3">
+        <label for="Category" class="form-label">Категория</label>
+        <div class="col-md-4">
+            <InputRadioGroup class="form-control" @bind-Value="product.Category">
+            @foreach (var c in categories)
+            {
+                <InputRadio Value="c.CategoryName"/> @c.CategoryName <br />
+            }
+            </InputRadioGroup>
+        </div>
+        <ValidationMessage For="@(() => product.Category)" />
+    </div>
+    <div class="mb-3">
+        <label for="Image" class="form-control">Изображение</label>
+        <div>
+            @if (String.IsNullOrWhiteSpace(product.Image) == false)
+            {
+                <img src="@product.Image" width="200" />
+            }
+        </div>
+        <div class="col-md-4">
+            <InputFile OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn">Сохранить</button>
+        <button class="btn btn-light" @onclick="Cancel">Отмена</button>
+    </div>
+</EditForm>
+
+@if (errors.Count > 0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    protected string Title = "Добавить";
+    protected ProductModel product = new();
+    private List<CategoryModel> categories = new();
+    private IBrowserFile? file;
+
+    private long maxFileSize = 1024 * 1024 * 1;
+    private List<string> errors = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        product = await productData.GetProduct(Id);
+        categories = await categoryData.GetCategories();
+
+        if (Id != 0)
+        {
+            Title = "Изменить";
+        }
+    }
+    protected async Task SaveProduct()
+    {
+        try
+        {
+            string relativePath = await CaptureFile();
+
+            if (product.Id != 0)
+            {
+                if (string.IsNullOrWhiteSpace(relativePath) == false) product.Image = relativePath;
+                await productData.UpdateProduct(product);
+            }
+            else
+            {
+                product.Image = relativePath;
+                await productData.AddProduct(product);
+            }
+            Cancel();
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Error: {ex.Message}");
+        }
+    }
+
+    private void LoadFile(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        if (file is null)
+        {
+            return "";
+        }
+
+        try
+        {
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+
+            string path = Path.Combine(config.GetValue<string>("FileStorage")!, "productimages/", newFileName);
+
+            string relativePath = Path.Combine("./images/productimages/", newFileName);
+
+            Directory.CreateDirectory(Path.Combine(config.GetValue<string>("FileStorage")!, "productimages/"));
+
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+
+            return relativePath;
+        }
+        catch (Exception ex)
+        {
+            errors.Add($"Your Image cannot be uploaded! Error: {ex.Message}");
+            throw;
+        }
+
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/adminpage");
+    }
+}

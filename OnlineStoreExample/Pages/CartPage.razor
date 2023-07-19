@@ -1,0 +1,69 @@
+﻿@page "/cart"
+@inject ICart cartData
+@inject UserManager<UserModel> userManager
+
+<h3>Корзина</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Название товара</th>
+            <th>Цена</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in cart.Products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td><button @onclick="(() => RemoveFromCart(product))">Удалить</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    public CartModel cart = new();
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask!).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            var _user = await userManager.GetUserAsync(user);
+            if (_user is not null)
+            {
+                var _userId = await userManager.GetUserIdAsync(_user);
+                cart = await cartData.GetCartAsync(_userId!);
+                if (cart == null)
+                {
+                    var newCart = new CartModel() { UserId = _userId };
+                    await cartData.CreateCartAsync(newCart);
+                    cart = await cartData.GetCartAsync(_userId!);
+                }
+            }
+        }
+        else
+        {
+            // User is not logged in
+        }
+    }
+
+    public async void RemoveFromCart(ProductModel product)
+    {
+        if (cart is not null)
+        {
+            cart.Products.Remove(product);
+            await cartData.UpdateCartAsync(cart);
+            StateHasChanged();
+        }
+    }
+
+}
+

@@ -1,0 +1,143 @@
+﻿@page "/ownerpage"
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Security.Claims
+@inject RoleManager<IdentityRole> roleManager
+@inject UserManager<UserModel> userManager
+@inject SignInManager<UserModel> signInManager
+
+@attribute [Authorize(Policy = "OwnerPolicy")]
+
+
+<h3>Owner Page</h3>
+
+<EditForm Model="userToChangeRole" OnValidSubmit="@AddUserWithRole">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+
+	<div class="form-group row">
+		<label for="login" class="col-sm-2 col-form-label">
+			Имя пользователя
+		</label>
+		<div class="col-sm-10">
+			<InputText id="login" @oninput="GetActualRole" @bind-Value="userToChangeRole.Email"></InputText>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label for="login" class="col-sm-2 col-form-label">
+			Текущая роль
+		</label>
+		<label for="actualrole" class="col-sm-2 col-form-label">
+			@if (String.IsNullOrWhiteSpace(ActualRole) == false)
+			{
+				@ActualRole
+			}
+			else
+			{
+				<span>Роль не найдена</span>
+			}
+		</label>
+	</div>
+
+
+	<div class="form-group row">
+		<label for="role" class="col-sm-2 col-form-label">
+			Новая роль
+		</label>
+		<div class="col-sm-10">
+			<InputSelect id="role-select" @bind-Value="roleToChange.Id">
+				@foreach (var role in selectList)
+				{
+					<option value="@role.Value" selected="@role.Selected">@role.Text</option>
+				}
+			</InputSelect>
+		</div>
+	</div>
+	<button class="btn btn-primary" type="submit">Подтвердить</button>
+</EditForm>
+
+
+
+@code {
+	UserModel userToChangeRole = new UserModel();
+	IdentityRole roleToChange = new IdentityRole();
+	string ActualRole = string.Empty;
+	List<IdentityRole> rolesList = new List<IdentityRole>();
+	List<SelectListItem> selectList = new List<SelectListItem>();
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		rolesList = roleManager.Roles.ToList();
+
+		foreach(var role in rolesList)
+		{
+			if (role.Name == "User")
+			{
+				selectList.Add(new SelectListItem()
+				{
+					Text = role.Name,
+					Value = role.Id,
+					Selected = true
+				});
+			}
+			else
+			{
+				selectList.Add(new SelectListItem()
+					{
+						Text = role.Name,
+						Value = role.Id,
+						Selected = false
+					});
+			}
+		}
+		await Task.Delay(0);
+	}
+
+	private async Task GetActualRole()
+	{
+		if (userToChangeRole.Email is not null)
+		{
+			var result = await userManager.FindByEmailAsync(userToChangeRole?.Email?.ToString() ?? "");
+			if (result is not null)
+			{
+				var role = await userManager.GetRolesAsync(result);
+				if (role.Count > 0)
+				{
+					ActualRole = role[0];
+				}
+			}
+		}
+	}
+
+	public async Task AddUserWithRole(EditContext context)
+	{
+		var roleStringsList = new List<string>();
+		foreach (var role in rolesList)
+		{
+			roleStringsList.Add(role.Name!);
+		}
+
+		var user = context.Model as UserModel;
+
+		var result = await userManager.FindByEmailAsync(userToChangeRole.Email?? "");
+
+		if (result is not null)
+		{
+			var getRoleFromList = rolesList.FirstOrDefault(x => x.Id == roleToChange.Id);
+
+			await RemoveRoles(result);
+			var roleChangedResult = await userManager.AddToRoleAsync(result, getRoleFromList?.Name ?? "User");
+			var claimAddedResult = await userManager.AddClaimAsync(result, new Claim(getRoleFromList?.Name ?? "User", getRoleFromList?.Id ?? ""));
+
+		}
+	}
+
+	private async Task RemoveRoles(UserModel user)
+	{
+		foreach (var role in rolesList)
+		{
+			await userManager.RemoveFromRoleAsync(user, role.Name!);
+		}
+	}
+}

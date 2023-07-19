@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject SignInManager<UserModel> SignInManager
+@inject UserManager<UserModel> UserManager
+@inject ICart cartData
+
+<div class="cart">
+    <span class="cart-icon">
+        <i class="fas fa-shopping-cart"></i>
+    </span>
+    <span class="cart-count">
+        @if (User is not null && SignInManager.IsSignedIn(User))
+        {
+            int cartItemCount = Count;
+            <span>@cartItemCount</span>
+        }
+        else
+        {
+            <span>0</span>
+        }
+    </span>
+</div>
+
+@code {
+    [Parameter]
+    public ClaimsPrincipal? User { get; set; }
+    public int Count { get; set; }
+
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    await GetCartItemCount();
+    //}
+
+    //private async Task GetCartItemCount()
+    //{
+    //    if (User is not null)
+    //    {
+    //        var cart = await cartData.GetCartAsync(UserManager.GetUserId(User));
+    //        Count = cart.Products.Count;
+    //    }
+    //    else
+    //    {
+    //        Count = 0;
+    //    }
+    //}
+}

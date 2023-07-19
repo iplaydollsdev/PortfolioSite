@@ -1,0 +1,44 @@
+﻿@inject IProduct productData
+@inject ICategory categoryData
+@inject ICart cartData
+
+@if (Id != 0)
+{
+    <!-- Модальное окно -->
+    <div class="modal fade show" id="Modal@Id" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true" role="dialog" @onclick="@ModalCloseOnOutsideClick">
+        <button class="close" @onclick="@ModalClose"><i class="oi oi-x"></i></button>
+
+         <div class="modal-dialog">
+            <div class="modal-content" @onmouseover="MouseIn" @onmouseout="MouseOut">
+                <div class="modal-body">
+
+                    <div class="product-img"><img src="@Image"></div>
+                    <h4 class="product-price"><span>@Price</span><span> &#8381;</span></h4>
+                    <h5 class="product-name">@Name</h5>
+                    <p class="product-desc">@Description</p>
+                    <div class="product-buttons content">
+                        <AuthorizeView>
+                            <Authorized>
+                                @if (Cart is not null && Cart.Products.FirstOrDefault(p => p.Id == this.Id) is not null)
+                                {
+                                    <button class="button-bordered" @onclick=(RemoveFromCart) disabled=@deleteButtonDisabled><span>Удалить из корзины</span></button>
+                                }
+                                else
+                                {
+                                    <button class="button-bordered" @onclick=(AddToCart) disabled=@addButtonDisabled><span><i class="oi oi-cart"></i> Купить сейчас</span></button>
+                                }
+                            </Authorized>
+                        </AuthorizeView>
+                        <button class="button-bordered" @onclick="@ModalClose"><span>Закрыть</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+}
+
+
+

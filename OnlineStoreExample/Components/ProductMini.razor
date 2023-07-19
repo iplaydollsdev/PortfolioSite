@@ -1,0 +1,38 @@
+﻿@inject IProduct productData
+@inject ICategory categoryData
+@inject ICart cartData
+
+
+@if (Id != 0)
+{
+    <div class="col-lg-4 col-sm-4">
+        <div class="product-box">
+            <div class="product-img"><img src="@Image" @onclick="@ModalPictureOpen" alt="product_@Id" cache-control="public, max-age=14400"></div>
+            <h4 class="product-price"><span>@Price</span><span> &#8381;</span></h4>
+            <h5 class="product-name">@Name</h5>
+
+            <div class="product-buttons">
+                <AuthorizeView>
+                    <Authorized>
+                        @if (Cart is not null && Cart.Products.FirstOrDefault(p => p.Id == this.Id) is not null)
+                        {
+                            <button class="button-bordered" @onclick=(RemoveFromCart) disabled=@deleteButtonDisabled><span><i>&nbsp;</i>Удалить из корзины&nbsp;</span></button>
+                        }
+                        else
+                        {
+                            <button class="button-bordered" @onclick=(AddToCart) disabled=@addButtonDisabled><span><i class="oi oi-cart"></i> Купить сейчас </span></button>
+                        }
+                    </Authorized>
+                </AuthorizeView>
+                <button type="button" class="button-bordered" data-toggle="modal" data-target="#@Id" @onclick="@ModalOpen">
+                    <span>Посмотреть больше</span>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+}
+
+
