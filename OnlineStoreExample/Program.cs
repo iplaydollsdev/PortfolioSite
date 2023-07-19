@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using OnlineStoreExample;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsDevelopment())
 {
-   string connectionString = System.IO.File.ReadAllText("/var/www/store.devportfolio.site/connectionstring.txt");
-   await Task.Delay(1000);
+   string connectionString = await System.IO.File.ReadAllTextAsync("/var/www/store.devportfolio.site/connectionstring.txt");
+   Console.WriteLine(connectionString);
 
    // Add services to the container.
    builder.Services.AddDbContext<AppDbContext>
