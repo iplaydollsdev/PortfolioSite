@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsDevelopment())
 {
    string connectionString = await System.IO.File.ReadAllTextAsync("/var/www/store.devportfolio.site/connectionstring.txt");
-   Console.WriteLine(connectionString);
 
    // Add services to the container.
    builder.Services.AddDbContext<AppDbContext>
