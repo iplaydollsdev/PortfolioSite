@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsDevelopment())
 {
    string connectionString = System.IO.File.ReadAllText("connectionstring.txt");
+   await Task.Delay(1000);
 
    // Add services to the container.
    builder.Services.AddDbContext<AppDbContext>
