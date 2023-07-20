@@ -74,6 +74,9 @@ namespace OnlineStoreExample.Pages
          timerForSlider = new System.Timers.Timer(10000);
          timerForSlider.Elapsed += TimerElapsed!;
          timerForSlider.Start();
+         SlideNext();
+         SlideNext();
+         SlideNext();
       }
       private void TimerElapsed(object sender, ElapsedEventArgs e)
       {
