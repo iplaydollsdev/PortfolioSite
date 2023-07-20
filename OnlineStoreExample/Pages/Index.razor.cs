@@ -19,6 +19,7 @@ using System.Timers;
 using System.Threading;
 using System.Text;
 using System.Reflection;
+using System.Drawing;
 
 namespace OnlineStoreExample.Pages
 {
@@ -74,10 +75,8 @@ namespace OnlineStoreExample.Pages
          timerForSlider = new System.Timers.Timer(10000);
          timerForSlider.Elapsed += TimerElapsed!;
          timerForSlider.Start();
-         SlideNext();
-         SlideNext();
-         SlideNext();
       }
+
       private void TimerElapsed(object sender, ElapsedEventArgs e)
       {
          sliderIndex++;
@@ -141,6 +140,17 @@ namespace OnlineStoreExample.Pages
             timerForSlider.Start();
          }
          StateHasChanged();
+      }
+      protected override async Task OnAfterRenderAsync(bool firstRender)
+      {
+         await PreloadImages();
+      }
+      private async Task PreloadImages()
+      {
+         foreach (string url in slideBGOptions)
+         {
+            await JSRuntime.InvokeVoidAsync("preloadImage", url);
+         }
       }
 
       #endregion
