@@ -141,18 +141,6 @@ namespace OnlineStoreExample.Pages
          }
          StateHasChanged();
       }
-      protected override async Task OnAfterRenderAsync(bool firstRender)
-      {
-         await PreloadImages();
-      }
-      private async Task PreloadImages()
-      {
-         foreach (string url in slideBGOptions)
-         {
-            await JSRuntime.InvokeVoidAsync("preloadImage", url);
-         }
-      }
-
       #endregion
 
       #region ModalWindow
