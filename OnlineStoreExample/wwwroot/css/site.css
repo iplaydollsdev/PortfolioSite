@@ -20,6 +20,8 @@ h1:focus {
 
 a, .btn-link {
     color: #0071c1;
+    background: 0;
+    border: 0;
 }
 
 .btn-primary {

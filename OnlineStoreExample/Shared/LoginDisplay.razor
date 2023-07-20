@@ -2,28 +2,28 @@
     <Authorized>
         <li class="nav-item">
             <NavLink class="nav-link" href="/cart">
-                <span class="oi oi-cart" style="font-size: 1.3rem" aria-hidden="true"></span>
+                <span class="oi oi-cart" aria-hidden="true"></span> Корзина
             </NavLink>
         </li>
         <li class="nav-item">
             <NavLink class="nav-link" href="/Identity/Account/Manage">
-                <span class="oi oi-account-login" aria-hidden="true"></span> @context.User.Identity?.Name
+                <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity?.Name
             </NavLink>
         </li>
         <li class="nav-item">
             <form method="post" action="Identity/Account/Logout">
-                    <button type="submit" class="nav-link btn-link" style="background:0"><span class="oi oi-account-logout" aria-hidden="true"></span> Выйти</button>
+                    <button type="submit" class="nav-link btn-link"><span class="oi oi-account-logout" aria-hidden="true"></span> Выйти</button>
             </form>
         </li>
     </Authorized>
 
     <NotAuthorized>
-        <li class="nav-item">
+@*        <li class="nav-item">
             <NavLink class="nav-link" href="Identity/Account/Register">
                 <span class="oi oi-account-logout" aria-hidden="true"></span> Регистрация
             </NavLink>
         </li>
-        <li class="nav-item">
+*@        <li class="nav-item">
             <NavLink class="nav-link" href="Identity/Account/Login">
                 <span class="oi oi-account-login" aria-hidden="true"></span> Войти
             </NavLink>

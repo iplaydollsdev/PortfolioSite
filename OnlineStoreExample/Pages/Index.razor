@@ -97,17 +97,17 @@
         <div class="category-tabs container-fluid">
             <div class="row">
                 <div class="col category-item">
-                    <button class="button-bordered btn-category" role="button" @onclick="@(() => selectedCategory = "Десктопные приложения")">
+                    <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Десктопные приложения"))'>
                         <span> <i class="oi oi-monitor cat-icon"></i> Десктопные приложения</span>
                     </button>
                 </div>
                 <div class="col category-item">
-                    <button class="button-bordered btn-category" role="button" @onclick="@(() => selectedCategory = "Мобильные приложения")">
+                    <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Мобильные приложения"))'>
                         <span> <i class="oi oi-phone cat-icon"></i> Мобильные приложения</span>
                     </button>
                 </div>
                 <div class="col category-item">
-                    <button class="button-bordered btn-category" role="button" @onclick="@(() => selectedCategory = "Web-приложения")">
+                    <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Web-приложения"))'>
                         <span> <i class="oi oi-globe cat-icon"></i> Web-приложения</span>
                     </button>
                 </div>

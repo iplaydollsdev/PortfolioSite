@@ -365,11 +365,10 @@ img {
         padding-bottom: 0.2rem;
         padding-right: 0.4rem;
     }
-
-/*    .button-bordered:hover span {
-        background: none;
-    }
-*/@media (hover: hover) {
+.button-bordered.active span {
+    background: none;
+}
+@media (hover: hover) {
     .button-bordered:hover span {
         background: none;
     }
