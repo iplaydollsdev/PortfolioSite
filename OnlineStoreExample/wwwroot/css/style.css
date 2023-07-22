@@ -345,6 +345,12 @@ img {
     cursor: pointer;
 }
 
+    .button-bordered:disabled {
+        background-image: linear-gradient(144deg, #111111, #999999);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
     .button-bordered:active,
     .button-bordered:hover {
         outline: 0;
@@ -534,3 +540,103 @@ img {
             transition: background 0.5s ease-in-out;
         }
     /* footer section end */
+/* admin page */
+::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.7);
+}
+
+.admin-header{
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+section {
+    margin: 0rem 3rem 3rem 3rem;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.tbl-header {
+    background-color: rgba(255,255,255,0.3);
+}
+
+.tbl-content {
+    height: 300px;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 1rem;
+    color: #fff;
+    border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+
+.add-button {
+    display: flex;
+    align-self: center;
+    width: 20rem;
+    height: 3rem;
+}
+
+a.button-bordered:hover {
+    color: white;
+}
+
+.control-buttons {
+   display: flex;
+   flex-wrap: wrap;
+   flex-direction: column;
+}
+.control-buttons .button-bordered {
+    margin: 1rem;
+}
+#delete.button-bordered span {
+    background-color: #530302;
+}
+@media (hover: hover) {
+    #delete.button-bordered:hover span {
+        background-color: #530302;
+        opacity: 0.5;
+    }
+}
+
+.form-label{
+    color: white;
+}
+.form-control {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    width: 100%;
+}
+    .form-control:focus {
+        background-color: rgba(255,255,255,0.4);
+        color: white;
+    }
+    /* admin page end*/

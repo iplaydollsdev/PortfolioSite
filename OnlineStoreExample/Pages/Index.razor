@@ -7,162 +7,162 @@
 
 <PageTitle>Каталог</PageTitle>
 
-<body>
-    <!-- banner bg main start -->
-    <div class="banner_bg_main" style="background-image: @slideBGOptions[sliderIndex] transition: background-image 0.5s ease-in-out;">
-        <!-- header top section start -->
-        <!-- logo section start -->
-        <div class="logo_section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
-                    </div>
+
+<!-- banner bg main start -->
+<div class="banner_bg_main" style="background-image: @slideBGOptions[sliderIndex] transition: background-image 0.5s ease-in-out;">
+    <!-- header top section start -->
+    <!-- logo section start -->
+    <div class="logo_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
                 </div>
             </div>
         </div>
-        <!-- logo section end -->
-        <!-- header section start -->
-        <div class="header_section">
-            <div class="container">
-                <div class="containt_main">
-                    <div class="main">
-                        <div style="position: relative; z-index:0">
-                            <form class="search" onsubmit="event.preventDefault()" onkeydown="OnSearch">
-                                <div class="dropdown category-select">
-                                    <select class="dropdown-toggle" id="category" @bind="selectedCategoryInSearch">
-                                        <option class="dropdown-item" value=""><span>Везде</span></option>
-                                        @foreach (var c in categories)
-                                        {
-                                            <option class="dropdown-item" value="@c.CategoryName">@c.CategoryName</option>
-                                        }
-                                    </select>
-                                </div>
-
-                                <div class="input-group" style="width:100%">
-                                    <input type="text" @bind-value="searchInput" class="search-text" placeholder="Искать на сайте">
-                                    @if (isSearching)
+    </div>
+    <!-- logo section end -->
+    <!-- header section start -->
+    <div class="header_section">
+        <div class="container">
+            <div class="containt_main">
+                <div class="main">
+                    <div style="position: relative; z-index:0">
+                        <form class="search" onsubmit="event.preventDefault()" onkeydown="OnSearch">
+                            <div class="dropdown category-select">
+                                <select class="dropdown-toggle" id="category" @bind="selectedCategoryInSearch">
+                                    <option class="dropdown-item" value=""><span>Везде</span></option>
+                                    @foreach (var c in categories)
                                     {
-                                        <div class="input-group-append category-select m-1">
-                                            <button class="button-bordered" type="button" @onclick=(OnSearchClosed)>
-                                                <span class="oi oi-circle-x"></span>
-                                            </button>
-                                        </div>
+                                        <option class="dropdown-item" value="@c.CategoryName">@c.CategoryName</option>
                                     }
+                                </select>
+                            </div>
+
+                            <div class="input-group" style="width:100%">
+                                <input type="text" @bind-value="searchInput" class="search-text" placeholder="Искать на сайте">
+                                @if (isSearching)
+                                {
                                     <div class="input-group-append category-select m-1">
-                                        <button class="button-bordered" type="submit" @onclick=(OnSearchButton)>
-                                            <span class="oi oi-magnifying-glass"></span>
+                                        <button class="button-bordered" type="button" @onclick=(OnSearchClosed)>
+                                            <span class="oi oi-circle-x"></span>
                                         </button>
                                     </div>
+                                }
+                                <div class="input-group-append category-select m-1">
+                                    <button class="button-bordered" type="submit" @onclick=(OnSearchButton)>
+                                        <span class="oi oi-magnifying-glass"></span>
+                                    </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- header section end -->
-        <!-- banner section start -->
-        <div class="banner_section layout_padding">
-            <div class="container">
-                <div id="bg-slider" class="carousel slide" data-ride="carousel">
-                    <div class="col-sm-12">
-                        <h1 class="banner_title">@sliderOptions[sliderIndex]</h1>
-                    </div>
-                    <div class="arrows">
-                    <a class="" role="button" @onclick=(SlidePrevious)>
-                        <i class="oi oi-chevron-left"></i>
-                    </a>
-                    <a class="" role="button" @onclick=(SlideNext)>
-                        <i class="oi oi-chevron-right"></i>
-                    </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- banner section end -->
     </div>
-    <!-- banner bg main end -->
-    <!-- desktop apps section start -->
-    <div class="apps_section">
-        @if (ModalWindowOpen)
-        {
-            <ProductModal Id="@ModalId" Cart="@cart" OnChange="@(() => StateHasChanged())" OnClose="@OnModalClose"/>
-        }
-        @if (ModalPictureWindowOpen)
-        {
-            <PictureModal Id="@ModalId" OnClose="@OnModalPictureClose" />
-        }
-
-        <div class="category-tabs container-fluid">
-            <div class="row">
-                <div class="col category-item">
-                    <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Десктопные приложения"))'>
-                        <span> <i class="oi oi-monitor cat-icon"></i> Десктопные приложения</span>
-                    </button>
-                </div>
-                <div class="col category-item">
-                    <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Мобильные приложения"))'>
-                        <span> <i class="oi oi-phone cat-icon"></i> Мобильные приложения</span>
-                    </button>
-                </div>
-                <div class="col category-item">
-                    <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Web-приложения"))'>
-                        <span> <i class="oi oi-globe cat-icon"></i> Web-приложения</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
+    <!-- header section end -->
+    <!-- banner section start -->
+    <div class="banner_section layout_padding">
         <div class="container">
-            @foreach (var c in categories.Where(c => string.IsNullOrWhiteSpace(selectedCategory) || c.CategoryName == selectedCategory))
-            {
-                <h1 class="apps_title">@c.CategoryName</h1>
-                <div class="apps_section_2">
-                    <div class="row">
-                        @foreach (var p in productsToShow.Where(p => p.Category == c.CategoryName))
-                        {
-                            <ProductMini Id="p.Id" Name="@p.Name" Image="@p.Image" Price="@p.Price" Cart="@cart" 
-                                OnChange="@(() => StateHasChanged())" OnModalOpen="@(() => OpenModal(p.Id))" OnModalPictureOpen="@(() => OpenPictureModal(p.Id))" />
-                        }
-                    </div>
+            <div id="bg-slider" class="carousel slide" data-ride="carousel">
+                <div class="col-sm-12">
+                    <h1 class="banner_title">@sliderOptions[sliderIndex]</h1>
                 </div>
-            }
-        </div>
-    </div>
-    <!-- apps section end -->
-    <!-- footer section start -->
-    <div class="footer_section">
-        <div class="container">
-            <div class="footer_logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
-            <div class="footer_menu">
-                <ul>
-                    <li>
-                        <a class="nav-link" href="/">Каталог</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/">Оплата</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/">Доставка</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/">Пользовательское соглашение</a>
-                    </li>
-                </ul>
+                <div class="arrows">
+                <a class="" role="button" @onclick=(SlidePrevious)>
+                    <i class="oi oi-chevron-left"></i>
+                </a>
+                <a class="" role="button" @onclick=(SlideNext)>
+                    <i class="oi oi-chevron-right"></i>
+                </a>
+                </div>
             </div>
-            @if (isCopying == false)
-            {
-                <div class="location_main">Связаться с разработчиком: <button @onclick="CopyToClipboard">iplaydollsdev@gmail.com <i class="oi oi-file"></i></button></div>
-            }
-            else
-            {
-                <div class="location_main">Связаться с разработчиком: <button @onclick="CopyToClipboard">Email скопирован <i class="oi oi-check"></i></button></div>
-            }
         </div>
     </div>
-    <!-- footer section end -->
-    <div style="background-image: @slideBGOptions[1]"></div>
-    <div style="background-image: @slideBGOptions[2]"></div>
-</body>
+    <!-- banner section end -->
+</div>
+<!-- banner bg main end -->
+<!-- desktop apps section start -->
+<div class="apps_section">
+    @if (ModalWindowOpen)
+    {
+        <ProductModal Id="@ModalId" Cart="@cart" OnChange="@(() => StateHasChanged())" OnClose="@OnModalClose"/>
+    }
+    @if (ModalPictureWindowOpen)
+    {
+        <PictureModal Id="@ModalId" OnClose="@OnModalPictureClose" />
+    }
+
+    <div class="category-tabs container-fluid">
+        <div class="row">
+            <div class="col category-item">
+                <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Десктопные приложения"))'>
+                    <span> <i class="oi oi-monitor cat-icon"></i> Десктопные приложения</span>
+                </button>
+            </div>
+            <div class="col category-item">
+                <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Мобильные приложения"))'>
+                    <span> <i class="oi oi-phone cat-icon"></i> Мобильные приложения</span>
+                </button>
+            </div>
+            <div class="col category-item">
+                <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Web-приложения"))'>
+                    <span> <i class="oi oi-globe cat-icon"></i> Web-приложения</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        @foreach (var c in categories.Where(c => string.IsNullOrWhiteSpace(selectedCategory) || c.CategoryName == selectedCategory))
+        {
+            <h1 class="apps_title">@c.CategoryName</h1>
+            <div class="apps_section_2">
+                <div class="row">
+                    @foreach (var p in productsToShow.Where(p => p.Category == c.CategoryName))
+                    {
+                        <ProductMini Id="p.Id" Name="@p.Name" Image="@p.Image" Price="@p.Price" Cart="@cart" 
+                            OnChange="@(() => StateHasChanged())" OnModalOpen="@(() => OpenModal(p.Id))" OnModalPictureOpen="@(() => OpenPictureModal(p.Id))" />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- apps section end -->
+<!-- footer section start -->
+<div class="footer_section">
+    <div class="container">
+        <div class="footer_logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
+        <div class="footer_menu">
+            <ul>
+                <li>
+                    <a class="nav-link" href="/">Каталог</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/">Оплата</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/">Доставка</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="/">Пользовательское соглашение</a>
+                </li>
+            </ul>
+        </div>
+        @if (isCopying == false)
+        {
+            <div class="location_main">Связаться с разработчиком: <button @onclick="CopyToClipboard">iplaydollsdev@gmail.com <i class="oi oi-file"></i></button></div>
+        }
+        else
+        {
+            <div class="location_main">Связаться с разработчиком: <button @onclick="CopyToClipboard">Email скопирован <i class="oi oi-check"></i></button></div>
+        }
+    </div>
+</div>
+<!-- footer section end -->
+<div style="background-image: @slideBGOptions[1]"></div>
+<div style="background-image: @slideBGOptions[2]"></div>
+
 

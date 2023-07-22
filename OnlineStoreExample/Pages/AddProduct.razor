@@ -5,71 +5,87 @@
 @inject ICategory categoryData
 @inject IConfiguration config
 
-<h1>@Title Товар</h1>
-<hr />
-<EditForm Model="@product" OnValidSubmit="SaveProduct">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label for="Name" class="form-label">Название</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="product.Name" />
-        </div>
-        <ValidationMessage For="@(() => product.Name)" />
-    </div>
-    <div class="mb-3">
-        <label for="Description" class="form-label">Описание</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="product.Description" />
-        </div>
-        <ValidationMessage For="@(() => product.Description)" />
-    </div>
-    <div class="mb-3">
-        <label for="Price" class="form-label">Цена</label>
-        <div class="col-md-4">
-            <InputNumber class="form-control" @bind-Value="product.Price" />
-        </div>
-        <ValidationMessage For="@(() => product.Price)" />
-    </div>
-    <div class="mb-3">
-        <label for="Category" class="form-label">Категория</label>
-        <div class="col-md-4">
-            <InputRadioGroup class="form-control" @bind-Value="product.Category">
-            @foreach (var c in categories)
-            {
-                <InputRadio Value="c.CategoryName"/> @c.CategoryName <br />
-            }
-            </InputRadioGroup>
-        </div>
-        <ValidationMessage For="@(() => product.Category)" />
-    </div>
-    <div class="mb-3">
-        <label for="Image" class="form-control">Изображение</label>
-        <div>
-            @if (String.IsNullOrWhiteSpace(product.Image) == false)
-            {
-                <img src="@product.Image" width="200" />
-            }
-        </div>
-        <div class="col-md-4">
-            <InputFile OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary btn">Сохранить</button>
-        <button class="btn btn-light" @onclick="Cancel">Отмена</button>
-    </div>
-</EditForm>
+<PageTitle>@Title Товар</PageTitle>
+<style>
+    body {
+        background: -webkit-linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+    }
+</style>
 
-@if (errors.Count > 0)
-{
-    <h2>Errors</h2>
-    <ul class="text-danger">
-        @foreach (var error in errors)
-        {
-            <li>@error</li>
-        }
-    </ul>
-}
+<h1 class="admin-header">@Title Товар</h1>
+
+<hr />
+<div class="container">
+    <EditForm Model="@product" OnValidSubmit="SaveProduct">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label for="Name" class="form-label">Название</label>
+            <div class="col-md-6">
+                <InputText class="form-control" @bind-Value="product.Name" />
+            </div>
+            <ValidationMessage For="@(() => product.Name)" />
+        </div>
+        <div class="mb-3">
+            <label for="Description" class="form-label">Описание</label>
+            <div class="col-md-6">
+                <InputTextArea class="form-control" @bind-Value="product.Description" />
+            </div>
+            <ValidationMessage For="@(() => product.Description)" />
+        </div>
+        <div class="mb-3">
+            <label for="Price" class="form-label">Цена</label>
+            <div class="col-md-6">
+                <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" />
+            </div>
+            <ValidationMessage For="@(() => product.Price)" />
+        </div>
+        <div class="mb-3">
+            <label for="Category" class="form-label">Категория</label>
+            <div class="col-md-6">
+                <InputRadioGroup class="form-control" @bind-Value="product.Category">
+                @foreach (var c in categories)
+                {
+                    <InputRadio Value="c.CategoryName"/> @c.CategoryName <br />
+                }
+                </InputRadioGroup>
+            </div>
+            <ValidationMessage For="@(() => product.Category)" />
+        </div>
+        <div class="mb-3">
+            <label for="Image" class="form-label">Изображение</label>
+            <div>
+                @if (String.IsNullOrWhiteSpace(product.Image) == false)
+                {
+                    <img src="@product.Image" width="200" style="max-width: 200px; max-height: 200px" />
+                }
+                @if (file is not null) 
+                {
+                    <i class="oi oi-arrow-right" style="font-size: 5rem; color: lightgray"></i>
+                    <img src="@ImageUri" width="200" height="200" style="max-width: 200px; max-height: 200px" />
+                }
+            </div>
+            <div class="col-md-6">
+                <InputFile OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="button-bordered"><span> <i class="oi oi-check cat-icon"></i> Сохранить</span></button>
+            <button class="button-bordered" @onclick="Cancel"><span> <i class="oi oi-x cat-icon"></i> Отмена</span></button>
+        </div>
+    </EditForm>
+
+    @if (errors.Count > 0)
+    {
+        <h2>Errors</h2>
+        <ul class="text-danger">
+            @foreach (var error in errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    }
+</div>
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -77,6 +93,7 @@
     protected ProductModel product = new();
     private List<CategoryModel> categories = new();
     private IBrowserFile? file;
+    private string? ImageUri;
 
     private long maxFileSize = 1024 * 1024 * 1;
     private List<string> errors = new();
@@ -115,9 +132,18 @@
         }
     }
 
-    private void LoadFile(InputFileChangeEventArgs e)
+    private async void LoadFile(InputFileChangeEventArgs e)
     {
         file = e.File;
+        var image = await file.RequestImageFileAsync("image/png", 200, 200);
+
+        using Stream imageStream = image.OpenReadStream(1024 * 1024 * 10);
+
+        using MemoryStream ms = new();
+        await imageStream.CopyToAsync(ms);
+
+        ImageUri = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+        StateHasChanged();
     }
 
     private async Task<string> CaptureFile()
