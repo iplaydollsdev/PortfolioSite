@@ -23,57 +23,115 @@
 </style>
 
 <h1 class="admin-header">Страница Админа</h1>
-
-<div>
-    <div style="display: flex; justify-content: space-around; padding: 1rem">
-        <a class="button-bordered add-button" href="/product/add" role="button"><span> 
-            <i class="oi oi-plus cat-icon"></i> Добавить приложение</span>
-        </a>
+<section style="display:flex">
+    <div class="filter">
+        <div class="tbl-header">
+             <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th class="first-column">Фильтр</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="tbl-content" style="height: 21.1rem">
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tbody>
+                <tr>
+                    <td class="first-column">
+                         <label for="filter-id">Id:</label>
+                    </td>
+                    <td>
+                        <div class="filter-item slider">
+                            <input type="range" class="slider-range" id="filter-id-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMin">
+                            <input type="range" class="slider-range" id="filter-id-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMax">
+                            <input type="number" id="filter-id-min-num" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMin">
+                            <input type="number" id="filter-id-max-num" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMax">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="first-column">
+                        <label for="filter-name" >Название:</label>
+                    </td>
+                    <td>
+                        <div class="filter-item">
+                            <input type="text" id="filter-name" @bind-value="filterName">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="first-column">
+                        <label for="filter-price">Цена:</label>
+                    </td>
+                    <td>
+                        <div class="filter-item">
+                            <input type="range" class="slider-range" id="filter-price-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMin">
+                            <input type="range" class="slider-range" id="filter-price-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMax">
+                            <input type="number" id="filter-price-min-num" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMin">
+                            <input type="number" id="filter-price-max-num" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMax">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                        <td class="first-column">
+                        <label for="filter-category">Категория:</label>
+                    </td>
+                    <td>
+                        <div class="filter-item">
+                            <select id="filter-category" @bind="filterCategory">
+                                <option value="Все">Все</option>
+                                <option value="Десктопные приложения">Десктопные приложения</option>
+                                <option value="Мобильные приложения">Мобильные приложения</option>
+                                <option value="Web-приложения">Web-приложения</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Товаров: @filteredProducts.Count
+                    </td>
+                    <td>
+                        <button class="filter-button" @onclick="Filter">Применить</button>
+                        <button class="filter-button" @onclick="DropFilter">Сбросить</button>
+                    </td>
+                </tr>
+                <tr>
+                </tr>
+            </tbody>
+        </table>
+        </div>
     </div>
-</div>
 
-<div class="category-tabs container-fluid">
-    <div class="row">
-        <div class="col category-item">
-            <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
-                <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
-            </button>
+    <div class="admin-buttons">
+        <div>
+            <div style="display: flex; justify-content: space-around; padding: 1rem">
+                <a class="button-bordered add-button" href="/product/add" role="button">
+                    <span>
+                        <i class="oi oi-plus cat-icon"></i> Добавить приложение
+                    </span>
+                </a>
+            </div>
         </div>
-        <div class="col category-item">
-            <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
-                <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
-            </button>
+
+        <div class="category-tabs container-fluid">
+            <div class="row">
+                <div class="col category-item">
+                    <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
+                    </button>
+                </div>
+                <div class="col category-item">
+                    <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
-
-<div class="category-tabs container-fluid">
-    <div class="row">
-        <div class="col category-item">
-            <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Десктопные приложения"))'>
-                <span> <i class="oi oi-monitor cat-icon"></i> Десктопные приложения</span>
-            </button>
-        </div>
-        <div class="col category-item">
-            <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Мобильные приложения"))'>
-                <span> <i class="oi oi-phone cat-icon"></i> Мобильные приложения</span>
-            </button>
-        </div>
-        <div class="col category-item">
-            <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Web-приложения"))'>
-                <span> <i class="oi oi-globe cat-icon"></i> Web-приложения</span>
-            </button>
-        </div>
-    </div>
-</div>
-
+</section>
 <section>
-    @foreach (var c in categories.Where(c => string.IsNullOrWhiteSpace(selectedCategory) || c.CategoryName == selectedCategory))
-    {
-    <div>
-        <h2 class="admin-header">@c.CategoryName</h2>
-    </div>
     <div class="tbl-header">
         <table cellpadding="0" cellspacing="0" border="0">
             <thead>
@@ -81,6 +139,7 @@
                     <th>Id</th>
                     <th>Название</th>
                     <th>Описание</th>
+                    <th>Категория</th>
                     <th>Цена</th>
                     <th>Картинка</th>
                     <th></th>
@@ -91,12 +150,13 @@
     <div class="tbl-content">
         <table cellpadding="0" cellspacing="0" border="0">
             <tbody>
-                @foreach (var p in products.Where(p => p.Category == c.CategoryName).ToList())
+                @foreach (var p in filteredProducts.ToList())
                     {
                     <tr>
                         <td>@p.Id</td>
                         <td>@p.Name</td>
                         <td>@p.Description</td>
+                        <td>@p.Category</td>
                         <td>@p.Price</td>
                         <td>
                             <img src="@p.Image" width="200" />
@@ -116,7 +176,7 @@
             </tbody>
         </table>
     </div>
-    }
+    @*}*@
 </section>
 
 
@@ -124,23 +184,49 @@
     bool isSending = false;
     string selectedCategory = string.Empty;
     private List<ProductModel> products = new();
+    private List<ProductModel> filteredProducts = new();
     private List<CategoryModel> categories = new();
+
+    private string filterName = string.Empty;
+    private string filterCategory = "Все";
+    private int filterIdMin = 0;
+    private int filterIdMax;
+    private int filterPriceMin = 0;
+    private int filterPriceMax;
+
 
     protected override async Task OnInitializedAsync()
     {
         products = await productData.GetAllProducts();
         categories = await categoryData.GetCategories();
+        DropFilter();
     }
 
-    private void SelectCategory(string category)
+    private void DropFilter()
     {
-        if (category == selectedCategory)
+        filteredProducts = products;
+        filterIdMin = GetMinId();
+        filterIdMax = GetMaxId();
+        filterPriceMin = GetMinPrice();
+        filterPriceMax = GetMaxPrice();
+    }
+
+    private void Filter()
+    {
+        if (string.IsNullOrWhiteSpace(filterCategory) || filterCategory == "Все")
         {
-            selectedCategory = string.Empty;
+            filteredProducts = products.Where(i => i.Id >= filterIdMin && i.Id <= filterIdMax)
+                                        .Where(p => p.Price >= filterPriceMin && p.Price <= filterPriceMax)
+                                        .Where(n => n.Name.Contains(filterName, StringComparison.InvariantCultureIgnoreCase))
+                                        .ToList();
         }
         else
         {
-            selectedCategory = category;
+            filteredProducts = products.Where(i => i.Id >= filterIdMin && i.Id <= filterIdMax)
+                                        .Where(c => c.Category == filterCategory)
+                                        .Where(p => p.Price >= filterPriceMin && p.Price <= filterPriceMax)
+                                        .Where(n => n.Name.Contains(filterName, StringComparison.InvariantCultureIgnoreCase))
+                                        .ToList();
         }
     }
 
@@ -151,6 +237,7 @@
         StateHasChanged();
     }
 
+    #region Export
     private async Task ExportToXml()
     {
         isSending = true;
@@ -226,6 +313,7 @@
 
         isSending = false;
     }
+    #endregion
 
     private async Task<string> GetUseremail() 
     {
@@ -234,6 +322,52 @@
         var email = claimsPrincipal?.Identity?.Name ?? "";
 
         return email;
+    }
+
+    private int GetMaxId()
+    {
+        if (products.Count > 0)
+        {
+            return products.Max(p => p.Id);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    private int GetMinId()
+    {
+        if (products.Count > 0)
+        {
+            return products.Min(p => p.Id);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private int GetMaxPrice()
+    {
+        if (products.Count > 0)
+        {
+            return (int)products.Max(p => p.Price);
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    private int GetMinPrice()
+    {
+        if (products.Count > 0)
+        {
+            return (int)products.Min(p => p.Price);
+        }
+        else
+        {
+            return 0;
+        }
     }
 }
 

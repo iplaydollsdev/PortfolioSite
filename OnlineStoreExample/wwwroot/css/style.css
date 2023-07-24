@@ -573,7 +573,7 @@ table {
 }
 
 .tbl-content {
-    height: 300px;
+    height: 30rem;
     overflow-x: auto;
     margin-top: 0px;
     border: 2px solid rgba(255,255,255,0.3);
@@ -600,7 +600,7 @@ td {
 
 .add-button {
     display: flex;
-    align-self: center;
+    align-self: end;
     width: 20rem;
     height: 3rem;
 }
@@ -639,4 +639,25 @@ a.button-bordered:hover {
         background-color: rgba(255,255,255,0.4);
         color: white;
     }
+/* Filter */
+.filter {
+    float: left;
+    margin-right: 3rem;
+    width: 45vw;
+}
+.admin-buttons {
+    float: right;
+    margin-left: 3rem;
+    width: 45vw;
+}
+.first-column {
+    width: 30%;
+}
+
+.slider {
+}
+
+.slider-range {
+}
+
     /* admin page end*/
