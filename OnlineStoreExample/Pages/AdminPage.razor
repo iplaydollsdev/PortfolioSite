@@ -23,6 +23,7 @@
 </style>
 
 <h1 class="admin-header">Страница Админа</h1>
+
 <section style="display:flex">
     <div class="filter">
         <div class="tbl-header">
@@ -42,12 +43,24 @@
                          <label for="filter-id">Id:</label>
                     </td>
                     <td>
-                        <div class="filter-item slider">
-                            <input type="range" class="slider-range" id="filter-id-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMin">
-                            <input type="range" class="slider-range" id="filter-id-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMax">
-                            <input type="number" id="filter-id-min-num" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMin">
-                            <input type="number" id="filter-id-max-num" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="filterIdMax">
-                        </div>
+                            <div class="price-input">
+                                <div class="field">
+                                    <span>От</span>
+                                    <input type="number" class="input-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
+                                </div>
+                                <div class="separator"></div>
+                                <div class="field">
+                                    <span>До</span>
+                                    <input type="number" class="input-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
+                                </div>
+                            </div>
+                            <div class="slider">
+                                <div class="progress" style="left: @GetPercent(GetMaxId(), GetMinId(), FilterIdMin); right: @GetPercent(GetMaxId(), GetMinId(), FilterIdMax, true)"></div>
+                            </div>
+                            <div class="filter-item range-input">
+                                <input type="range" class="range-min" id="filter-id-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
+                                <input type="range" class="range-max" id="filter-id-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
+                            </div>
                     </td>
                 </tr>
                 <tr>
@@ -65,11 +78,23 @@
                         <label for="filter-price">Цена:</label>
                     </td>
                     <td>
-                        <div class="filter-item">
-                            <input type="range" class="slider-range" id="filter-price-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMin">
-                            <input type="range" class="slider-range" id="filter-price-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMax">
-                            <input type="number" id="filter-price-min-num" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMin">
-                            <input type="number" id="filter-price-max-num" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="filterPriceMax">
+                        <div class="price-input">
+                            <div class="field">
+                                <span>От</span>
+                                <input type="number" class="input-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
+                            </div>
+                            <div class="separator"></div>
+                            <div class="field">
+                                <span>До</span>
+                                <input type="number" class="input-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
+                            </div>
+                        </div>
+                        <div class="slider">
+                            <div class="progress" style="left: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMin); right: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMax, true)"></div>
+                        </div>
+                        <div class="filter-item range-input">
+                            <input type="range" class="range-min" id="filter-price-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
+                            <input type="range" class="range-max" id="filter-price-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
                         </div>
                     </td>
                 </tr>
@@ -178,7 +203,14 @@
     </div>
     @*}*@
 </section>
-
+<div class="mobile-overlay">
+    <h1>Страница недоступна в мобильном виде</h1>
+    <a class="button-bordered" href="/" role="button">
+        <span>
+            <i class="oi oi-arrow-left cat-icon"></i> Назад
+        </span>
+    </a>
+</div>
 
 @code{
     bool isSending = false;
@@ -189,10 +221,72 @@
 
     private string filterName = string.Empty;
     private string filterCategory = "Все";
+
     private int filterIdMin = 0;
     private int filterIdMax;
+    public int FilterIdMin {
+        get { return filterIdMin; }
+        set
+        {
+            if (value < filterIdMax)
+            {
+                filterIdMin = value;
+            }
+            else
+            {
+                filterIdMin = filterIdMax - 1;
+            }
+        } 
+    }
+    public int FilterIdMax
+    {
+        get { return filterIdMax; }
+        set
+        {
+            if (value > filterIdMin)
+            {
+                filterIdMax = value;
+            }
+            else
+            {
+                filterIdMax = filterIdMin + 1;
+            }
+        }
+    }
+
     private int filterPriceMin = 0;
     private int filterPriceMax;
+    public int FilterPriceMin
+    {
+        get { return filterPriceMin; }
+        set
+        {
+            if (value < filterPriceMax)
+            {
+                filterPriceMin = value;
+            }
+            else
+            {
+                filterPriceMin = filterPriceMax - 10;
+            }
+        }
+    }
+    public int FilterPriceMax
+    {
+        get { return filterPriceMax; }
+        set
+        {
+            if (value > filterPriceMin)
+            {
+                filterPriceMax = value;
+            }
+            else
+            {
+                filterPriceMax = filterPriceMin + 10;
+            }
+        }
+    }
+
 
 
     protected override async Task OnInitializedAsync()
@@ -368,6 +462,21 @@
         {
             return 0;
         }
+    }
+
+    private string GetPercent(int max, int min, int number, bool invert = false)
+    {
+        if (max != 0)
+        {
+            decimal dec = ((decimal)number - min) / ((decimal)max - min);
+            if (invert)
+            {
+                return (100 - (int)(dec * 100)).ToString() + "%";
+            }
+            return ((int)(dec * 100)).ToString() + "%";
+        }
+        return "0%";
+
     }
 }
 

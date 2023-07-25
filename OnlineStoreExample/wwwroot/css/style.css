@@ -653,11 +653,121 @@ a.button-bordered:hover {
 .first-column {
     width: 30%;
 }
+/**/
+.price-input {
+    width: 100%;
+    display: flex;
+    margin: 0 0 .7rem;
+}
+
+    .price-input .field {
+        display: flex;
+        width: 100%;
+        height: 1.2rem;
+        align-items: center;
+    }
+
+.field input {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    font-size: 1rem;
+    margin-left: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #999;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.price-input .separator {
+    width: 5rem;
+    display: flex;
+    font-size: 1rem;
+    align-items: center;
+    justify-content: center;
+}
 
 .slider {
+    height: 5px;
+    position: relative;
+    background: #ddd;
+    border-radius: 5px;
 }
 
-.slider-range {
+    .slider .progress {
+        height: 100%;
+        left: 25%;
+        right: 25%;
+        position: absolute;
+        border-radius: 5px;
+        background: #17A2B8;
+    }
+
+.range-input {
+    position: relative;
 }
 
+    .range-input input {
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        top: -5px;
+        background: none;
+        pointer-events: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+input[type="range"]::-webkit-slider-thumb {
+    height: 17px;
+    width: 17px;
+    border-radius: 50%;
+    background: #17A2B8;
+    pointer-events: auto;
+    -webkit-appearance: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 17px;
+    width: 17px;
+    border: none;
+    border-radius: 50%;
+    background: #17A2B8;
+    pointer-events: auto;
+    -moz-appearance: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+/**/
+.mobile-overlay h1, .mobile-overlay a, .mobile-overlay {
+    visibility: hidden;
+}
+
+@media screen and (max-width: 900px){
+    .mobile-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        z-index: 9999;
+        pointer-events: auto;
+    }
+        .mobile-overlay h1 {
+            visibility: visible;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .mobile-overlay h1, .mobile-overlay a, .mobile-overlay {
+            visibility: visible;
+            width: 100%;
+        }
+} 
     /* admin page end*/
