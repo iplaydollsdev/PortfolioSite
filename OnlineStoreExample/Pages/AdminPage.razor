@@ -131,27 +131,18 @@
 
     <div class="admin-buttons">
         <div>
-            <div style="display: flex; justify-content: space-around; padding: 1rem">
-                <a class="button-bordered add-button" href="/product/add" role="button">
+            <div>
+                <a class="button-admin add-button" href="/product/add" role="button">
                     <span>
                         <i class="oi oi-plus cat-icon"></i> Добавить приложение
                     </span>
                 </a>
-            </div>
-        </div>
-
-        <div class="category-tabs container-fluid">
-            <div class="row">
-                <div class="col category-item">
-                    <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
-                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
-                    </button>
-                </div>
-                <div class="col category-item">
-                    <button class="button-bordered btn-category" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
-                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
-                    </button>
-                </div>
+                <button class="button-admin add-button" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
+                    <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
+                </button>
+                <button class="button-admin add-button" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
+                    <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
+                </button>
             </div>
         </div>
     </div>
@@ -161,13 +152,13 @@
         <table cellpadding="0" cellspacing="0" border="0">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Название</th>
-                    <th>Описание</th>
-                    <th>Категория</th>
-                    <th>Цена</th>
-                    <th>Картинка</th>
-                    <th></th>
+                    <th style="width: 5%">Id</th>
+                    <th style ="width: 20%">Название</th>
+                    <th style ="width: 30%">Описание</th>
+                    <th style="width: 12%">Категория</th>
+                    <th style="width: 10%">Цена</th>
+                    <th style="width: 13%">Картинка</th>
+                    <th style="width: 10%"></th>
                 </tr>
             </thead>
         </table>
@@ -178,20 +169,20 @@
                 @foreach (var p in filteredProducts.ToList())
                     {
                     <tr>
-                        <td>@p.Id</td>
-                        <td>@p.Name</td>
-                        <td>@p.Description</td>
-                        <td>@p.Category</td>
-                        <td>@p.Price</td>
-                        <td>
+                        <td style ="width: 5%">@p.Id</td>
+                        <td style="width: 20%">@p.Name</td>
+                        <td style="width: 30%">@p.Description</td>
+                        <td style="width: 12%">@p.Category</td>
+                        <td style="width: 10%">@p.Price</td>
+                        <td style="width: 13%">
                             <img src="@p.Image" width="200" />
                         </td>
-                        <td>
+                        <td style="width: 10%">
                             <div class="control-buttons">
-                                <a class="button-bordered" href="/product/edit/@p.Id" role="button">
+                                <a class="button-admin" href="/product/edit/@p.Id" role="button">
                                     <span> <i class="oi oi-pencil cat-icon"></i> Изменить</span>
                                     </a>
-                                <button id="delete" class="button-bordered" @onclick="@(e => DeleteProduct(p))" role="button">
+                                <button id="delete" class="button-admin" @onclick="@(e => DeleteProduct(p))" role="button">
                                     <span> <i class="oi oi-trash cat-icon"></i> Удалить</span>
                                 </button>
                             </div>
@@ -328,6 +319,7 @@
     {
         await productData.DeleteProduct(p);
         products.Remove(p);
+        DropFilter();
         StateHasChanged();
     }
 

@@ -43,12 +43,25 @@
         <div class="mb-3">
             <label for="Category" class="form-label">Категория</label>
             <div class="col-md-6">
-                <InputRadioGroup class="form-control" @bind-Value="product.Category">
-                @foreach (var c in categories)
-                {
-                    <InputRadio Value="c.CategoryName"/> @c.CategoryName <br />
-                }
+                <div class="pick-radio">
+                <InputRadioGroup class="form-control" @bind-Value="product.Category" Name="radio">
+                    @if (categories.Count > 0)
+                    {
+                        <div class="pick-radio-item">
+                            <InputRadio Value="categories[0].CategoryName" id="radio-1" checked Name="radio"/> 
+                            <label for="radio-1">@categories[0].CategoryName</label>
+                        </div>
+                        <div class="pick-radio-item">
+                            <InputRadio Value="categories[1].CategoryName" id="radio-2" Name="radio"/> 
+                            <label for="radio-2">@categories[1].CategoryName</label>
+                        </div>
+                        <div class="pick-radio-item">
+                            <InputRadio Value="categories[2].CategoryName" id="radio-3" Name="radio"/> 
+                            <label for="radio-3">@categories[2].CategoryName</label>
+                        </div>
+                    }
                 </InputRadioGroup>
+                </div>
             </div>
             <ValidationMessage For="@(() => product.Category)" />
         </div>
@@ -66,12 +79,16 @@
                 }
             </div>
             <div class="col-md-6">
-                <InputFile OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
+                <InputFile class="pick-file" OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
             </div>
         </div>
-        <div class="form-group">
-            <button type="submit" class="button-bordered"><span> <i class="oi oi-check cat-icon"></i> Сохранить</span></button>
-            <button class="button-bordered" @onclick="Cancel"><span> <i class="oi oi-x cat-icon"></i> Отмена</span></button>
+        <div class="form-group save-buttons col-md-6">
+            <button type="submit" class="button-admin add-button"><span> <i class="oi oi-check cat-icon"></i> Сохранить</span></button>
+            <a class="button-admin add-button" href="/adminpage" role="button">
+                <span>
+                    <i class="oi oi-x cat-icon"></i> Отмена
+                </span>
+            </a>
         </div>
     </EditForm>
 

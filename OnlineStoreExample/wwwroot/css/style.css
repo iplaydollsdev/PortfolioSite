@@ -598,17 +598,6 @@ td {
     border-bottom: solid 1px rgba(255,255,255,0.1);
 }
 
-.add-button {
-    display: flex;
-    align-self: end;
-    width: 20rem;
-    height: 3rem;
-}
-
-a.button-bordered:hover {
-    color: white;
-}
-
 .control-buttons {
    display: flex;
    flex-wrap: wrap;
@@ -646,6 +635,8 @@ a.button-bordered:hover {
     width: 45vw;
 }
 .admin-buttons {
+    display: flex;
+    justify-content: flex-end;
     float: right;
     margin-left: 3rem;
     width: 45vw;
@@ -705,7 +696,7 @@ input[type="number"]::-webkit-inner-spin-button {
         right: 25%;
         position: absolute;
         border-radius: 5px;
-        background: #17A2B8;
+        background: rgb(83, 106, 159);
     }
 
 .range-input {
@@ -727,7 +718,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 17px;
     width: 17px;
     border-radius: 50%;
-    background: #17A2B8;
+    background: rgb(83, 106, 159);
     pointer-events: auto;
     -webkit-appearance: none;
     box-shadow: 0 0 6px rgba(0,0,0,0.05);
@@ -744,6 +735,109 @@ input[type="range"]::-moz-range-thumb {
     box-shadow: 0 0 6px rgba(0,0,0,0.05);
 }
 /**/
+.button-admin {
+    background-color: rgba(255,255,255,0.3);
+    border: 0;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 1rem 2rem -0.5rem;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1em;
+    max-width: 100%;
+    padding: 0.2rem;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    margin: 0 0 2rem;
+}
+.button-admin span {
+    padding: 0.5rem 0.5rem;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+a.button-admin:hover {
+    color: white;
+}
+.add-button {
+    display: flex;
+    align-self: end;
+    width: 20rem;
+    height: 3rem;
+}
+.save-buttons{
+    display: flex;
+    justify-content: space-between;
+}
+.save-buttons .add-button{
+    width: 15rem;
+    border: 1px solid white;
+}
+.pick-file {
+    color: white;
+    width: 100%;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+    .pick-file::file-selector-button {
+        background-color: rgba(255,255,255,0.3);
+        border: 1px solid white;
+        color: white;
+        width: 15rem;
+        height: 3rem;
+        padding: 0 0.5rem 0 0;
+        cursor: pointer;
+    }
+
+.pick-radio{
+    display: flex;
+    color: white;
+    width: 100%;
+    justify-content: space-between;
+}
+.pick-radio-item{
+    display: inline-block;
+    float: left;
+    width: 33.3333%;
+    justify-content: center;
+}
+.pick-radio input[type=radio]{
+    display: none;
+}
+.pick-radio label {
+    display: inline-block;
+    cursor: pointer;
+    padding: 0px 1rem;
+    line-height: 36px;
+    border: 1px solid #999;
+    border-right: none;
+    user-select: none;
+    width: 100%;
+    text-align: center;
+}
+.pick-radio .pick-radio-item:first-child label {
+    border-radius: 4px 0 0 4px;
+}
+
+.pick-radio .pick-radio-item:last-child label {
+    border-radius: 0 4px 4px 0;
+    border-right: 1px solid #999;
+}
+.pick-radio input[type=radio]:checked + label {
+    background-color: rgba(255,255,255,0.3);
+}
+.pick-radio label:hover {
+    color: #999;
+}
+
 .mobile-overlay h1, .mobile-overlay a, .mobile-overlay {
     visibility: hidden;
 }
