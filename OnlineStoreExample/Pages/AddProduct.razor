@@ -22,21 +22,21 @@
         <div class="mb-3">
             <label for="Name" class="form-label">Название</label>
             <div class="col-md-6">
-                <InputText class="form-control" @bind-Value="product.Name" />
+                <InputText class="form-control" @bind-Value="product.Name" @onfocusout="OnChangeCheck" />
             </div>
-            <ValidationMessage For="@(() => product.Name)" />
+            <ValidationMessage For="@(() => product.Name)"/>
         </div>
         <div class="mb-3">
             <label for="Description" class="form-label">Описание</label>
             <div class="col-md-6">
-                <InputTextArea class="form-control" @bind-Value="product.Description" />
+                <InputTextArea class="form-control" @bind-Value="product.Description" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Description)" />
         </div>
         <div class="mb-3">
             <label for="Price" class="form-label">Цена</label>
             <div class="col-md-6">
-                <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" />
+                <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Price)" />
         </div>
@@ -44,46 +44,46 @@
             <label for="Category" class="form-label">Категория</label>
             <div class="col-md-6">
                 <div class="pick-radio">
-                <InputRadioGroup class="form-control" @bind-Value="product.Category" Name="radio">
+                    <InputRadioGroup class="form-control" @bind-Value="product.Category" Name="radio">
                     @if (categories.Count > 0)
                     {
-                        <div class="pick-radio-item">
-                            <InputRadio Value="categories[0].CategoryName" id="radio-1" checked Name="radio"/> 
+                            <div class="pick-radio-item" @onmouseleave="OnChangeCheck">
+                                <InputRadio Value="categories[0].CategoryName" id="radio-1" checked Name="radio" />
                             <label for="radio-1">@categories[0].CategoryName</label>
                         </div>
-                        <div class="pick-radio-item">
-                            <InputRadio Value="categories[1].CategoryName" id="radio-2" Name="radio"/> 
+                            <div class="pick-radio-item" @onmouseleave="OnChangeCheck">
+                                <InputRadio Value="categories[1].CategoryName" id="radio-2" Name="radio" />
                             <label for="radio-2">@categories[1].CategoryName</label>
                         </div>
-                        <div class="pick-radio-item">
-                            <InputRadio Value="categories[2].CategoryName" id="radio-3" Name="radio"/> 
-                            <label for="radio-3">@categories[2].CategoryName</label>
+                            <div class="pick-radio-item" @onmouseleave="OnChangeCheck">
+                                <InputRadio Value="categories[2].CategoryName" id="radio-3" Name="radio" />
+                                <label for="radio-3">@categories[2].CategoryName</label>
                         </div>
                     }
-                </InputRadioGroup>
+                    </InputRadioGroup>
                 </div>
             </div>
             <ValidationMessage For="@(() => product.Category)" />
         </div>
         <div class="mb-3">
             <label for="Image" class="form-label">Изображение</label>
-            <div>
+            <div style="display: flex; align-items: center;">
                 @if (String.IsNullOrWhiteSpace(product.Image) == false)
                 {
                     <img src="@product.Image" width="200" style="max-width: 200px; max-height: 200px" />
                 }
                 @if (file is not null) 
                 {
-                    <i class="oi oi-arrow-right" style="font-size: 5rem; color: lightgray"></i>
+                    <div><i class="oi oi-arrow-right" style="font-size:5rem; color: lightgray"></i></div>
                     <img src="@ImageUri" width="200" height="200" style="max-width: 200px; max-height: 200px" />
                 }
             </div>
             <div class="col-md-6">
-                <InputFile class="pick-file" OnChange="LoadFile" accept=".png,.jpg,.jpeg" />
+                <InputFile class="pick-file" OnChange="LoadFile" accept=".png,.jpg,.jpeg"/>
             </div>
         </div>
         <div class="form-group save-buttons col-md-6">
-            <button type="submit" class="button-admin add-button"><span> <i class="oi oi-check cat-icon"></i> Сохранить</span></button>
+            <button type="submit" class="button-admin add-button" disabled="@(!isModified)"><span> <i class="oi oi-check cat-icon"></i> Сохранить</span></button>
             <a class="button-admin add-button" href="/adminpage" role="button">
                 <span>
                     <i class="oi oi-x cat-icon"></i> Отмена
@@ -108,12 +108,14 @@
     public int Id { get; set; }
     protected string Title = "Добавить";
     protected ProductModel product = new();
+    private ProductModel productToCheck = new ();
     private List<CategoryModel> categories = new();
     private IBrowserFile? file;
     private string? ImageUri;
 
     private long maxFileSize = 1024 * 1024 * 1;
     private List<string> errors = new();
+    private bool isModified = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -123,6 +125,32 @@
         if (Id != 0)
         {
             Title = "Изменить";
+            productToCheck.Name = product.Name;
+            productToCheck.Description = product.Description;
+            productToCheck.Category = product.Category;
+            productToCheck.Price = product.Price;
+            productToCheck.Image = product.Image;
+        }
+        else
+        {
+            isModified = true;
+        }
+    }
+
+    private void OnChangeCheck()
+    {
+        if (product.Name != productToCheck.Name
+            || product.Description != productToCheck.Description
+            || product.Category != productToCheck.Category
+            || product.Price != productToCheck.Price
+            || product.Image != productToCheck.Image)
+        {
+            isModified = true;
+            StateHasChanged();
+        } else
+        {
+            isModified = false;
+            StateHasChanged();
         }
     }
     protected async Task SaveProduct()
@@ -131,14 +159,14 @@
         {
             string relativePath = await CaptureFile();
 
+            if (string.IsNullOrWhiteSpace(relativePath) == false) product.Image = relativePath;
+
             if (product.Id != 0)
             {
-                if (string.IsNullOrWhiteSpace(relativePath) == false) product.Image = relativePath;
                 await productData.UpdateProduct(product);
             }
             else
             {
-                product.Image = relativePath;
                 await productData.AddProduct(product);
             }
             Cancel();
@@ -160,6 +188,7 @@
         await imageStream.CopyToAsync(ms);
 
         ImageUri = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+        isModified = true;
         StateHasChanged();
     }
 

@@ -37,7 +37,7 @@
     <Name>Лучший разработчик на свете!</Name>
     <Description>Он адын такой!!!</Description>
     <Image>./images/productimages/zchj1zno.jpg</Image>
-    <Price>9999999999.00</Price>
+    <Price>9.00</Price>
     <Category>Web-приложения</Category>
   </ProductModel>
   <ProductModel>
@@ -45,15 +45,7 @@
     <Name>Лучший тестировщик на свете!</Name>
     <Description>Адна такая!!!</Description>
     <Image>./images/productimages/bgul4uhm.jpg</Image>
-    <Price>9999999999999999.00</Price>
+    <Price>99.00</Price>
     <Category>Web-приложения</Category>
-  </ProductModel>
-  <ProductModel>
-    <Id>11</Id>
-    <Name>Любой товар</Name>
-    <Description>Дада</Description>
-    <Image>./images/productimages/sirl3ue1.jpg</Image>
-    <Price>123.00</Price>
-    <Category>Мобильные приложения</Category>
   </ProductModel>
 </ArrayOfProductModel>
