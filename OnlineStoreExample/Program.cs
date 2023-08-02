@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
 using OnlineStoreExample;
 using System.Diagnostics;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 if (!builder.Environment.IsDevelopment())
@@ -29,6 +30,7 @@ builder.Services.AddTransient<ICategory, CategoryData>();
 builder.Services.AddTransient<IProduct, ProductData>();
 builder.Services.AddTransient<ICart, CartData>();
 builder.Services.AddTransient<OnlineStoreLibrary.DataAccess.IEmailSender, EmailSender>();
+builder.Services.AddSingleton<Encoding>(Encoding.UTF8);
 builder.Services.AddResponseCaching();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor()
