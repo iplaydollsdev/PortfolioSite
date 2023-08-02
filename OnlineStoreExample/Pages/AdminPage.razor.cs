@@ -28,7 +28,7 @@ namespace OnlineStoreExample.Pages
       private List<ProductModel> filteredProducts = new();
       private List<CategoryModel> categories = new();
       private string filterName = string.Empty;
-      private string filterCategory = "Все";
+      private string filterCategory = "Г‚Г±ГҐ";
       private uint filterIdMin;
       private uint filterIdMax;
       public uint FilterIdMin
@@ -154,12 +154,12 @@ namespace OnlineStoreExample.Pages
          filterPriceMin = GetMinPrice();
          filterPriceMax = GetMaxPrice();
          filterName = string.Empty;
-         filterCategory = "Все";
+         filterCategory = "Р’СЃРµ";
       }
 
       private void Filter()
       {
-         if (string.IsNullOrWhiteSpace(filterCategory) || filterCategory == "Все")
+         if (string.IsNullOrWhiteSpace(filterCategory) || filterCategory == "Г‚Г±ГҐ")
          {
             filteredProducts = products.Where(i => i.Id >= filterIdMin && i.Id <= filterIdMax).Where(p => p.Price >= filterPriceMin && p.Price <= filterPriceMax).Where(n => n.Name.Contains(filterName, StringComparison.InvariantCultureIgnoreCase)).ToList();
          }
@@ -200,7 +200,7 @@ namespace OnlineStoreExample.Pages
          using (var attachmentFile = new System.Net.Mail.Attachment("Products.xml"))
          {
             var email = await GetUseremail();
-            await emailSender.SendEmailWithFileAsync(email, subject: "XML", htmlMessage: "Запрашиваемый файл", attachmentFile);
+            await emailSender.SendEmailWithFileAsync(email, subject: "XML", htmlMessage: "Г‡Г ГЇГ°Г ГёГЁГўГ ГҐГ¬Г»Г© ГґГ Г©Г«", attachmentFile);
          }
 
          isSending = false;
@@ -223,10 +223,10 @@ namespace OnlineStoreExample.Pages
          {
             var worksheet = package.Workbook.Worksheets.Add("Products");
             worksheet.Cells[1, 1].Value = "Id";
-            worksheet.Cells[1, 2].Value = "Название";
-            worksheet.Cells[1, 3].Value = "Описание";
-            worksheet.Cells[1, 4].Value = "Цена";
-            worksheet.Cells[1, 5].Value = "Категория";
+            worksheet.Cells[1, 2].Value = "ГЌГ Г§ГўГ Г­ГЁГҐ";
+            worksheet.Cells[1, 3].Value = "ГЋГЇГЁГ±Г Г­ГЁГҐ";
+            worksheet.Cells[1, 4].Value = "Г–ГҐГ­Г ";
+            worksheet.Cells[1, 5].Value = "ГЉГ ГІГҐГЈГ®Г°ГЁГї";
             for (int i = 0; i < products.Count; i++)
             {
                worksheet.Cells[i + 2, 1].Value = products[i].Id;
@@ -245,7 +245,7 @@ namespace OnlineStoreExample.Pages
             using (var attachmentFile = new System.Net.Mail.Attachment("Products.xlsx"))
             {
                var email = await GetUseremail();
-               await emailSender.SendEmailWithFileAsync(email, subject: "XLSX", htmlMessage: "Запрашиваемый файл", attachmentFile);
+               await emailSender.SendEmailWithFileAsync(email, subject: "XLSX", htmlMessage: "Г‡Г ГЇГ°Г ГёГЁГўГ ГҐГ¬Г»Г© ГґГ Г©Г«", attachmentFile);
             }
          }
 
