@@ -5,7 +5,6 @@
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h3>@ViewData["Title"]</h3>
 
 <div class="row">
     <div class="col-md-6">
@@ -13,12 +12,12 @@
         <p>
             <strong>Данные удалятся полностью, восставить их уже не получится.</strong>
         </p>
-        <form id="download-data" asp-page="DownloadPersonalData" method="post">
-            <button class="btn btn-primary" type="submit">Скачать</button>
-        </form>
-        <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Удалить</a>
-        </p>
+        <div style="display: flex; justify-content: space-between">
+            <form id="download-data" asp-page="DownloadPersonalData" method="post">
+                <button class="btn btn-primary" type="submit">Скачать</button>
+            </form>
+                <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Удалить</a>
+        </div>
     </div>
 </div>
 

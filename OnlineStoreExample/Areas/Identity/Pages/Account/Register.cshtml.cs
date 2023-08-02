@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -89,6 +90,8 @@ namespace OnlineStoreExample.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required(ErrorMessage = "Пароль обязателен.")]
+            [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).*$",
+                                 ErrorMessage = "Пароль должен содержать как минимум одну строчную букву (a-z), одну заглавную букву (A-Z), одну цифру и один символ.")]
             [StringLength(100, ErrorMessage = "{0} должен состоять из {2} - {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Пароль")]

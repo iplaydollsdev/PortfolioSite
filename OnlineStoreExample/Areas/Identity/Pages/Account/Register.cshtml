@@ -8,43 +8,49 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Создайте новый аккаунт.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Леголас" />
-                <label asp-for="Input.Name">Имя</label>
-                <span asp-validation-for="Input.Name" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Пароль</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Подтвердите пароль</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрация</button>
-        </form>
+        <section>
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2>Создайте новый аккаунт.</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Леголас" />
+                    <label asp-for="Input.Name">Имя</label>
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.Password">Пароль</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.ConfirmPassword">Подтвердите пароль</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Регистрация</button>
+            </form>
+        </section>
     </div>
     <div class="col-md-8 col-md-offset-2">
-        <section>
-            <h2>Готовые решения.</h2>
-            <hr />
+        <h2>Готовые решения.</h2>
+        <hr />
 
-            <p>Необязательно регистрировать новый аккаунт, чтобы протестировать возможности сайта.</p>
-            <p>Можно использовать приготовленные заранее аккаунты:</p>
-            <p>Аккаунт пользователя: Email: <b>user@user.com</b> Пароль: <b>Pass123!</b></p>
-            <p>Аккаунт администратора: Email: <b>admin@admin.com</b> Пароль: <b>Pass123!</b></p>
-        </section>
+        <p>Необязательно регистрировать новый аккаунт, чтобы протестировать возможности сайта.</p>
+        <p>Можно использовать приготовленные заранее аккаунты:</p>
+        <hr />
+        <p>Аккаунт пользователя:</p>
+        <p>Email: <b>user@user.com</b></p>
+        <p>Пароль: <b>Pass123!</b></p>
+        <hr />
+        <p>Аккаунт администратора:</p>
+        <p> Email: <b>admin@admin.com</b></p>
+        <p> Пароль: <b>Pass123!</b></p>
     </div>
 </div>
 
