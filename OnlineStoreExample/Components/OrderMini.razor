@@ -1,0 +1,66 @@
+﻿@inject IProduct productData
+@inject ICategory categoryData
+@inject ICart cartData
+
+
+@if (Id != 0)
+{
+    <div class="product-box-order">
+        <div class="product-img-cart">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th style="width: 70%">Название</th>
+                        <th style="width: 30%">Цена</th>
+                    </tr>
+                </thead>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    @foreach (var p in Order!.Products)
+                    {
+                        <tr>
+                            <td style="width: 70%">@p.Name</td>
+                            <td style="width: 30%">@p.Price</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td><b>Количество: @(Order.Products.Count)</b></td>
+                        <td><b>Итого: @(Order.Products.Sum(p => p.Price))</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="product-nd">
+            <div class="product-price-cart"><h4 class="admin-header">Заказ:</h4><h4 class="admin-header">@Id</h4></div>
+        </div>
+        <div class="product-nd">
+            <div class="product-price-cart"><h4 class="admin-header">Статус:</h4><h4 class ="admin-header">@Status</h4></div>
+        </div>
+    </div>
+}
+else
+{
+}
+
+
+@code{
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string? Status { get; set; }
+
+    [Parameter]
+    public OrderModel? Order { get; set; }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private async Task NotifyStateChanged()
+    {
+        await OnChange.InvokeAsync();
+    }
+}
+
+

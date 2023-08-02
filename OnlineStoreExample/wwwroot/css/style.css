@@ -298,7 +298,7 @@ img {
         width: 18rem;
     }
 
-    @media only screen and (max-width: 490px) {
+    @media only screen and (max-width: 900px) {
         .btn-category {
             font-size: 0;
         }
@@ -873,3 +873,99 @@ a.button-admin:hover {
         }
 } 
     /* admin page end*/
+    /*cart*/
+.product-box-cart {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    height: auto;
+    padding: 1.2rem;
+    box-shadow: 0 0 1.5rem 0.7rem rgba(0,0,0,0.3);
+    margin: 1.2rem;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-img-cart {
+    text-align: start;
+    margin-right: 1rem;
+    min-height: 35vh;
+    border-radius: 15px;
+}
+
+.product-box-cart .product-img-cart {
+    height: 35vh;
+}
+
+@media only screen and (max-width: 600px) {
+    .product-img-cart {
+        display: none;
+    }
+}
+
+.product-img-cart img {
+    border-radius: 15px;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    min-height: inherit;
+}
+
+.product-price-cart {
+    margin-top: 1rem;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26px;
+}
+
+.product-name-cart {
+    font-size: 20px;
+    align-self: start;
+}
+
+.product-desc-cart {
+    align-self: end;
+    font-size: 16px;
+}
+
+.product-buttons-cart {
+    height: 35vh;
+    margin: 0 1rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+}
+.product-nd {
+    height: 35vh;
+    margin: 0 1rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.order-box-cart {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    height: auto;
+    padding: 1.2rem;
+    box-shadow: 0 0 1.5rem 0.7rem rgba(0,0,0,0.3);
+    margin: 1.2rem;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.product-box-order {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    height: fit-content;
+    padding: 1.2rem;
+    box-shadow: 0 0 1.5rem 0.7rem rgba(0,0,0,0.3);
+    margin: 1.2rem;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+    /*cart end*/

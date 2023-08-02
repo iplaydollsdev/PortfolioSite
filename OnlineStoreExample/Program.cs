@@ -29,6 +29,7 @@ else
 builder.Services.AddTransient<ICategory, CategoryData>();
 builder.Services.AddTransient<IProduct, ProductData>();
 builder.Services.AddTransient<ICart, CartData>();
+builder.Services.AddTransient<IOrder, OrderData>();
 builder.Services.AddTransient<OnlineStoreLibrary.DataAccess.IEmailSender, EmailSender>();
 builder.Services.AddSingleton<Encoding>(Encoding.UTF8);
 builder.Services.AddResponseCaching();

@@ -1,31 +1,59 @@
 ﻿@page "/cart"
 @inject ICart cartData
+@inject IOrder orderData
+@inject IProduct productData
 @inject UserManager<UserModel> userManager
 
-<h3>Корзина</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Название товара</th>
-            <th>Цена</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in cart.Products)
+<style>
+    body {
+        background: -webkit-linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        height:100vh;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8 col-sm-11 col-11">
+        @foreach (var p in cart.Products)
         {
-            <tr>
-                <td>@product.Name</td>
-                <td>@product.Price</td>
-                <td><button @onclick="(() => RemoveFromCart(product))">Удалить</button></td>
-            </tr>
+            <ProductForCart Id="p.Id" Name="@p.Name" Desc="@p.Description" Image="@p.Image" Price="@p.Price" Cart="@cart" OnChange="@(() => StateHasChanged())"/>
         }
-    </tbody>
-</table>
+    </div>
+    <div class="col-md-3 col-sm-11 col-11">
+        <div class="order-box-cart">
+            @if (cart.Products.Count%10 == 1)
+            {
+                <h3>@cart.Products.Count товар</h3>
+            }
+            else if (cart.Products.Count % 10 == 2 || cart.Products.Count % 10 == 3 || cart.Products.Count % 10 == 4)
+            {
+                <h3>@cart.Products.Count товара</h3>
+            }
+            else if (cart.Products.Count % 10 == 0)
+            {
+                <h3>Корзина пуста</h3>
+            }
+            else
+            {
+                <h3>@cart.Products.Count товаров</h3>               
+            }
+            <h3>Сумма заказа: @(cart.Products.Sum(p => p.Price))</h3>
+            @if (cart.Products.Count > 0)
+            {
+                <button class="button-bordered" @onclick=(MakeOrder)><span><i>&nbsp;</i>Сделать заказ&nbsp;</span></button>
+            }
+            else
+            {
+                <button class="button-bordered" @onclick=(MakeOrder) disabled=true><span><i>&nbsp;</i>Сделать заказ&nbsp;</span></button>                
+            }
+        </div>
+    </div>
+</div>
 
 @code {
 
     public CartModel cart = new();
+    public List<OrderModel> orders = new();
 
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationStateTask { get; set; }
@@ -41,11 +69,15 @@
             {
                 var _userId = await userManager.GetUserIdAsync(_user);
                 cart = await cartData.GetCartAsync(_userId!);
+                orders = await orderData.GetOrdersAsync(_userId!);
                 if (cart == null)
                 {
                     var newCart = new CartModel() { UserId = _userId };
                     await cartData.CreateCartAsync(newCart);
                     cart = await cartData.GetCartAsync(_userId!);
+                }
+                if (orders.Count > 0)
+                {                   
                 }
             }
         }
@@ -53,6 +85,7 @@
         {
             // User is not logged in
         }
+        StateHasChanged();
     }
 
     public async void RemoveFromCart(ProductModel product)
@@ -62,6 +95,27 @@
             cart.Products.Remove(product);
             await cartData.UpdateCartAsync(cart);
             StateHasChanged();
+        }
+    }
+
+    private async void MakeOrder()
+    {
+        if (cart is not null)
+        {
+            var newOrder = new OrderModel() { UserId = cart.UserId };
+
+            await orderData.CreateOrderAsync(newOrder);
+            var allOrders = await orderData.GetOrdersAsync(cart.UserId);
+            var madeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id); 
+            foreach (var p in cart.Products)
+            {
+                madeOrder.Products.Add(p);
+                await orderData.UpdateOrderAsync(madeOrder);
+            }
+            cart.Products.Clear();
+            await cartData.UpdateCartAsync(cart);
+            StateHasChanged();
+            var anotherMadeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id);
         }
     }
 

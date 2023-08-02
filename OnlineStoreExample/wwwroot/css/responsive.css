@@ -7,6 +7,7 @@
     .banner_bg_main {
         background-size: 100% 100%;
     }
+
     .dropdown {
         display: none;
     }
@@ -34,6 +35,15 @@
     }
     .dropdown {
         display: none;
+    }
+    main {
+        padding-top: 3rem;
+    }
+
+    .navbar {
+        width: 100%;
+        position: fixed;
+        z-index: 1000;
     }
 }
 

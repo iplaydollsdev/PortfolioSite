@@ -1,0 +1,26 @@
+﻿@inject IProduct productData
+@inject ICategory categoryData
+@inject ICart cartData
+
+
+@if (Id != 0)
+{
+    @*<div class="col-lg-8 col-sm-6">*@
+        <div class="product-box-cart">
+            <div class="product-img-cart"><img src="@Image" alt="product_@Id"></div>
+            <div class="product-nd">
+                <h5 class="product-name-cart">@Name</h5>
+                <h6 class="product-desc-cart">@Desc </h6>
+            </div>
+            <div class="product-buttons-cart">
+                <h4 class="product-price-cart"><span>@Price</span><span> &#8381;</span></h4>
+                <button class="button-bordered" @onclick=(RemoveFromCart) disabled=@deleteButtonDisabled><span><i>&nbsp;</i>Удалить из корзины&nbsp;</span></button>
+            </div>
+        </div>
+    @*</div>*@
+}
+else
+{
+}
+
+

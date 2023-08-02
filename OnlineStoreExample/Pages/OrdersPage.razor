@@ -1,0 +1,56 @@
+﻿@page "/orders"
+@inject IOrder orderData
+@inject IProduct productData
+@inject UserManager<UserModel> userManager
+
+<style>
+    body {
+        background: -webkit-linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        height: 100vh;
+    }
+</style>
+@if (orders.Count > 0)
+{
+<div class="row">
+    <div class="col-md-8 col-sm-11 col-11">
+        @foreach (var o in orders)
+        {
+            <OrderMini Id="o.Id" Order="o" Status="@(o.OrderStatus)" OnChange="@(() => StateHasChanged())"/>
+        }
+    </div>
+</div>
+}
+
+@code {
+    public List<OrderModel> orders = new();
+    public List<ProductModel> products = new();
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationStateTask!).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            var _user = await userManager.GetUserAsync(user);
+            if (_user is not null)
+            {
+                var _userId = await userManager.GetUserIdAsync(_user);
+                orders = await orderData.GetOrdersAsync(_userId!);
+                if (orders.Count > 0)
+                {
+                    var order = await orderData.GetOrderAsync(orders[0].Id);
+                }
+            }
+        }
+        else
+        {
+            // User is not logged in
+        }
+        StateHasChanged();
+    }
+
+}
