@@ -111,12 +111,14 @@
                                                   UserEmail = userName!};
 
                 await orderData.CreateOrderAsync(newOrder);
-                var allOrders = await orderData.GetOrdersByIdAsync(cart.UserId);
-                var madeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id);
                 foreach (var p in cart.Products)
                 {
-                    madeOrder.Products.Add(p);
-                    await orderData.UpdateOrderAsync(madeOrder);
+                    newOrder.Products.Add(new OrderProductModel()
+                        {
+                            Name = p.Name,
+                            Price = p.Price
+                        });
+                    await orderData.UpdateOrderAsync(newOrder);
                 }
                 cart.Products.Clear();
                 await cartData.UpdateCartAsync(cart);

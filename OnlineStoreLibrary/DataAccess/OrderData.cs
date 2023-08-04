@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MailKit.Search;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStoreLibrary.DataAccess
 {
@@ -13,7 +14,7 @@ namespace OnlineStoreLibrary.DataAccess
       {
          try
          {
-            return await _dbContext.Order.Where(c => c.UserId == id).ToListAsync();
+            return await _dbContext.Order.Include(o => o.Products).Where(c => c.UserId == id).ToListAsync();
          }
          catch
          {
@@ -24,7 +25,7 @@ namespace OnlineStoreLibrary.DataAccess
       {
          try
          {
-            return await _dbContext.Order.Where(c => c.UserEmail == email).ToListAsync();
+            return await _dbContext.Order.Include(o => o.Products).Where(c => c.UserEmail == email).ToListAsync();
          }
          catch
          {
@@ -35,7 +36,7 @@ namespace OnlineStoreLibrary.DataAccess
       {
          try
          {
-            return await _dbContext.Order.ToListAsync();
+            return await _dbContext.Order.Include(o => o.Products).ToListAsync();
          }
          catch
          {
@@ -47,7 +48,7 @@ namespace OnlineStoreLibrary.DataAccess
          try
          {
             var order = new OrderModel();
-            order = await _dbContext.Order.FirstOrDefaultAsync(c => c.Id == id);
+            order = await _dbContext.Order.Include(o => o.Products).FirstOrDefaultAsync(c => c.Id == id);
             return order!;
 
          }
@@ -80,13 +81,35 @@ namespace OnlineStoreLibrary.DataAccess
             throw;
          }
       }
-      public async Task<List<ProductModel>> GetAllProductsInOrder(int id)
+      public async Task<List<OrderProductModel>> GetAllProductsInOrder(int id)
       {
          try
          {
             var order = new OrderModel();
-            order = await _dbContext.Order.FirstOrDefaultAsync(o => o.Id == id);
+            order = await _dbContext.Order.Include(o => o.Products).FirstOrDefaultAsync(o => o.Id == id);
             return order!.Products;
+         }
+         catch
+         {
+            throw;
+         }
+      }
+
+      public async Task DeleteOrder(OrderModel order)
+      {
+         try
+         {
+            var orderFull = _dbContext.Order.Include(o => o.Products).FirstOrDefault(o => o.Id == order.Id);
+            if (orderFull != null)
+            {
+               _dbContext.OrderProduct.RemoveRange(orderFull.Products);
+               _dbContext.Order.Remove(orderFull);
+               await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+               throw new ArgumentNullException();
+            }
          }
          catch
          {
@@ -95,3 +118,4 @@ namespace OnlineStoreLibrary.DataAccess
       }
    }
 }
+

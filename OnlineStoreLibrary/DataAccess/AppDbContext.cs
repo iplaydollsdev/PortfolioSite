@@ -15,6 +15,7 @@ namespace OnlineStoreLibrary.DataAccess
       public DbSet<ProductModel> Product { get; set; }
       public DbSet<CartModel> Cart { get; set; }
       public DbSet<OrderModel> Order { get; set; }
+      public DbSet<OrderProductModel> OrderProduct { get; set; }
       public DbSet<UserModel> User { get; set; }
 
       protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,14 +29,14 @@ namespace OnlineStoreLibrary.DataAccess
          modelBuilder.Entity<CartModel>()
             .ToTable("carts")
             .HasKey(c => c.Id);
+
          modelBuilder.Entity<OrderModel>()
             .ToTable("order")
             .HasKey(o => o.Id);
 
          modelBuilder.Entity<ProductModel>()
              .ToTable("products")
-             .HasKey(p => p.Id)
-             ;
+             .HasKey(p => p.Id);
       }
    }
 }

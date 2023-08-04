@@ -5,11 +5,18 @@
 @inject RoleManager<IdentityRole> roleManager
 @inject UserManager<UserModel> userManager
 @inject SignInManager<UserModel> signInManager
+@inject IOrder orderData
 
 @attribute [Authorize(Policy = "OwnerPolicy")]
 
 
-<h3>Owner Page</h3>
+<style>
+	body {
+		background: -webkit-linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+		background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+		height: 100vh;
+	}
+</style>
 
 <EditForm Model="userToChangeRole" OnValidSubmit="@AddUserWithRole">
 	<DataAnnotationsValidator />
@@ -56,6 +63,35 @@
 	<button class="btn btn-primary" type="submit">Подтвердить</button>
 </EditForm>
 
+<div class="tbl-content">
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tbody>
+			@foreach (var o in orders.ToList())
+			{
+				<tr>
+					<td style="width: 5%">@o.Id</td>
+					<td style="width: 20%">@o.UserEmail</td>
+					<td style="width: 40%">
+						@foreach (var p in o.Products)
+						{
+							<p>@p</p>
+						}
+					</td>
+					<td style="width: 15%">@o.OrderStatus</td>
+					<td style="width: 10%">@o.Products.Sum(product => product.Price)</td>
+					<td style="width: 10%">
+						<div class="control-buttons">
+							<button @onclick='() => DeleteOrder(o)' class="button-admin" role="button">
+								<span> <i class="oi oi-check cat-icon"></i>Удалить</span>
+							</button>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
 
 
 @code {
@@ -64,11 +100,14 @@
 	string ActualRole = string.Empty;
 	List<IdentityRole> rolesList = new List<IdentityRole>();
 	List<SelectListItem> selectList = new List<SelectListItem>();
+	List<OrderModel> orders = new();
 
 
 	protected override async Task OnInitializedAsync()
 	{
 		rolesList = roleManager.Roles.ToList();
+		orders = await orderData.GetAllOrdersAsync();
+
 
 		foreach(var role in rolesList)
 		{
@@ -139,5 +178,12 @@
 		{
 			await userManager.RemoveFromRoleAsync(user, role.Name!);
 		}
+	}
+
+	private async void DeleteOrder(OrderModel o)
+	{
+		await orderData.DeleteOrder(o);
+		orders.Remove(o);
+		StateHasChanged();
 	}
 }

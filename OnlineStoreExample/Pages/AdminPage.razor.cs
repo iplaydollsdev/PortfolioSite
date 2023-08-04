@@ -520,7 +520,7 @@ namespace OnlineStoreExample.Pages
 
       private static string GetPercent(uint max, uint min, uint number, bool invert = false)
       {
-         if (max != 0)
+         if (max != 0 && min != max)
          {
             decimal dec = ((decimal)number - min) / ((decimal)max - min);
             if (invert)
