@@ -16,10 +16,14 @@
     <div class="col-md-8 col-sm-11 col-11">
         @foreach (var o in orders)
         {
-            <OrderMini Id="o.Id" Order="o" Status="@(o.OrderStatus)" OnChange="@(() => StateHasChanged())"/>
+            <OrderMini Id="o.Id" Order="o" OnChange="@(() => StateHasChanged())"/>
         }
     </div>
-</div>
+    </div>
+}
+else
+{
+    <h1 class="admin-header">Заказов пока нет</h1>
 }
 
 @code {
@@ -39,7 +43,7 @@
             if (_user is not null)
             {
                 var _userId = await userManager.GetUserIdAsync(_user);
-                orders = await orderData.GetOrdersAsync(_userId!);
+                orders = await orderData.GetOrdersByIdAsync(_userId!);
                 if (orders.Count > 0)
                 {
                     var order = await orderData.GetOrderAsync(orders[0].Id);

@@ -26,9 +26,40 @@ namespace OnlineStoreExample.Pages
       string selectedCategory = string.Empty;
       private List<ProductModel> products = new();
       private List<ProductModel> filteredProducts = new();
+      private List<OrderModel> orders = new();
+      private List<OrderModel> filteredOrders = new();
       private List<CategoryModel> categories = new();
+      private bool tabCatalog = true;
+      private bool tabOrders = false;
+
+      protected override async Task OnInitializedAsync()
+      {
+         products = await productData.GetAllProducts();
+         categories = await categoryData.GetCategories();
+         orders = await orderData.GetAllOrdersAsync();
+         DropFilter();
+         DropFilterOrders();
+      }
+      private void SwitchTabs(int tab)
+      {
+         switch (tab)
+         {
+            case 1:
+               tabCatalog = true;
+               tabOrders = false;
+               break;
+            case 2:
+               tabCatalog = false;
+               tabOrders = true; 
+               break;
+            default:
+               break;
+         }
+      }
+
+      #region FilterCatalog
       private string filterName = string.Empty;
-      private string filterCategory = "Âñå";
+      private string filterCategory = "Все";
       private uint filterIdMin;
       private uint filterIdMax;
       public uint FilterIdMin
@@ -139,13 +170,6 @@ namespace OnlineStoreExample.Pages
          }
       }
 
-      protected override async Task OnInitializedAsync()
-      {
-         products = await productData.GetAllProducts();
-         categories = await categoryData.GetCategories();
-         DropFilter();
-      }
-
       private void DropFilter()
       {
          filteredProducts = products;
@@ -159,7 +183,7 @@ namespace OnlineStoreExample.Pages
 
       private void Filter()
       {
-         if (string.IsNullOrWhiteSpace(filterCategory) || filterCategory == "Âñå")
+         if (string.IsNullOrWhiteSpace(filterCategory) || filterCategory == "Все")
          {
             filteredProducts = products.Where(i => i.Id >= filterIdMin && i.Id <= filterIdMax).Where(p => p.Price >= filterPriceMin && p.Price <= filterPriceMax).Where(n => n.Name.Contains(filterName, StringComparison.InvariantCultureIgnoreCase)).ToList();
          }
@@ -168,6 +192,234 @@ namespace OnlineStoreExample.Pages
             filteredProducts = products.Where(i => i.Id >= filterIdMin && i.Id <= filterIdMax).Where(c => c.Category == filterCategory).Where(p => p.Price >= filterPriceMin && p.Price <= filterPriceMax).Where(n => n.Name.Contains(filterName, StringComparison.InvariantCultureIgnoreCase)).ToList();
          }
       }
+      private uint GetMaxId()
+      {
+         if (products.Count > 0)
+         {
+            return (uint)products.Max(p => p.Id);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMinId()
+      {
+         if (products.Count > 0)
+         {
+            return (uint)products.Min(p => p.Id);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMaxPrice()
+      {
+         if (products.Count > 0)
+         {
+            return (uint)products.Max(p => p.Price);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMinPrice()
+      {
+         if (products.Count > 0)
+         {
+            return (uint)products.Min(p => p.Price);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+
+      #endregion
+
+      #region FilterOrders
+      private string filterOrderName = string.Empty;
+      private string filterOrderStatus = "Все";
+      private uint filterOrderIdMin;
+      private uint filterOrderIdMax;
+      public uint FilterOrderIdMin
+      {
+         get
+         {
+            return filterOrderIdMin;
+         }
+
+         set
+         {
+            if (value < GetMinId())
+            {
+               filterOrderIdMin = GetMinId();
+            }
+            else
+            {
+               if (value < filterOrderIdMax)
+               {
+                  filterOrderIdMin = value;
+               }
+               else
+               {
+                  filterOrderIdMin = filterOrderIdMax - 1;
+               }
+            }
+         }
+      }
+      public uint FilterOrderIdMax
+      {
+         get
+         {
+            return filterOrderIdMax;
+         }
+
+         set
+         {
+            if (value > GetMaxId())
+            {
+               filterOrderIdMax = GetMaxId();
+            }
+            else
+            {
+               if (value > filterOrderIdMin)
+               {
+                  filterOrderIdMax = value;
+               }
+               else
+               {
+                  filterOrderIdMax = filterOrderIdMin + 1;
+               }
+            }
+         }
+      }
+
+      private uint filterOrderPriceMin;
+      private uint filterOrderPriceMax;
+      public uint FilterOrderPriceMin
+      {
+         get
+         {
+            return filterOrderPriceMin;
+         }
+
+         set
+         {
+            if (value < GetMinPrice())
+            {
+               filterOrderPriceMin = GetMinPrice();
+            }
+            else
+            {
+               if (value < filterOrderPriceMax)
+               {
+                  filterOrderPriceMin = value;
+               }
+               else
+               {
+                  filterOrderPriceMin = filterOrderPriceMax - 10;
+               }
+            }
+         }
+      }
+      public uint FilterOrderPriceMax
+      {
+         get
+         {
+            return filterOrderPriceMax;
+         }
+
+         set
+         {
+            if (value > GetMaxPrice())
+            {
+               filterOrderPriceMax = GetMaxPrice();
+            }
+            else
+            {
+               if (value > filterOrderPriceMin)
+               {
+                  filterOrderPriceMax = value;
+               }
+               else
+               {
+                  filterOrderPriceMax = filterOrderPriceMin + 10;
+               }
+            }
+         }
+      }
+
+      private void DropFilterOrders()
+      {
+         filteredOrders = orders;
+         filterOrderIdMin = GetMinOrderId();
+         filterOrderIdMax = GetMaxOrderId();
+         filterOrderPriceMin = GetMinOrderPrice();
+         filterOrderPriceMax = GetMaxOrderPrice();
+         filterOrderName = string.Empty;
+         filterOrderStatus = "Все";
+      }
+
+      private void FilterOrders()
+      {
+         if (string.IsNullOrWhiteSpace(filterOrderStatus) || filterOrderStatus == "Все")
+         {
+            filteredOrders = orders.Where(i => i.Id >= filterOrderIdMin && i.Id <= filterOrderIdMax).Where(order => order.Products.Sum(product => product.Price) >= filterOrderPriceMin && order.Products.Sum(product => product.Price) <= filterOrderPriceMax).Where(n => n.UserEmail.Contains(filterOrderName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+         }
+         else
+         {
+            filteredOrders = orders.Where(i => i.Id >= filterOrderIdMin && i.Id <= filterOrderIdMax).Where(c => c.OrderStatus == filterOrderStatus).Where(order => order.Products.Sum(product => product.Price) >= filterOrderPriceMin && order.Products.Sum(product => product.Price) <= filterOrderPriceMax).Where(n => n.UserEmail.Contains(filterOrderName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+         }
+      }
+      private uint GetMaxOrderId()
+      {
+         if (orders.Count > 0)
+         {
+            return (uint)orders.Max(p => p.Id);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMinOrderId()
+      {
+         if (orders.Count > 0)
+         {
+            return (uint)orders.Min(p => p.Id);
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMaxOrderPrice()
+      {
+         if (orders.Count > 0)
+         {
+            return (uint)orders.Max(order => order.Products.Sum(product => product.Price));
+         }
+         else
+         {
+            return 0;
+         }
+      }
+      private uint GetMinOrderPrice()
+      {
+         if (orders.Count > 0)
+         {
+            return (uint)orders.Min(order => order.Products.Sum(product => product.Price));
+         }
+         else
+         {
+            return 0;
+         }
+      }
+
+      #endregion
 
       private async void DeleteProduct(ProductModel p)
       {
@@ -175,6 +427,12 @@ namespace OnlineStoreExample.Pages
          products.Remove(p);
          DropFilter();
          StateHasChanged();
+      }
+
+      private async void ChangeOrderStatus(OrderModel order, string status)
+      {
+         order.OrderStatus = status;
+         await orderData.UpdateOrderAsync(order);
       }
 
       #region Export
@@ -205,7 +463,6 @@ namespace OnlineStoreExample.Pages
 
          isSending = false;
       }
-
       public async Task ExportToExcel()
       {
          isSending = true;
@@ -251,8 +508,8 @@ namespace OnlineStoreExample.Pages
 
          isSending = false;
       }
-
       #endregion
+
       private async Task<string> GetUseremail()
       {
          var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
@@ -261,55 +518,7 @@ namespace OnlineStoreExample.Pages
          return email;
       }
 
-      private uint GetMaxId()
-      {
-         if (products.Count > 0)
-         {
-            return (uint)products.Max(p => p.Id);
-         }
-         else
-         {
-            return 0;
-         }
-      }
-
-      private uint GetMinId()
-      {
-         if (products.Count > 0)
-         {
-            return (uint)products.Min(p => p.Id);
-         }
-         else
-         {
-            return 0;
-         }
-      }
-
-      private uint GetMaxPrice()
-      {
-         if (products.Count > 0)
-         {
-            return (uint)products.Max(p => p.Price);
-         }
-         else
-         {
-            return 0;
-         }
-      }
-
-      private uint GetMinPrice()
-      {
-         if (products.Count > 0)
-         {
-            return (uint)products.Min(p => p.Price);
-         }
-         else
-         {
-            return 0;
-         }
-      }
-
-      private string GetPercent(uint max, uint min, uint number, bool invert = false)
+      private static string GetPercent(uint max, uint min, uint number, bool invert = false)
       {
          if (max != 0)
          {

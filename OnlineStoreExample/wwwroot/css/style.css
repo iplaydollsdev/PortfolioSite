@@ -871,7 +871,23 @@ a.button-admin:hover {
             visibility: visible;
             width: 100%;
         }
-} 
+}
+.tabs{
+    margin-bottom: 2rem;
+}
+    .tabs .button-admin{
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+    .tabs .button-admin.active {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: black;
+    }
+    .tabs .nav{
+        display: flex;
+        justify-content: center;
+    }
+
     /* admin page end*/
     /*cart*/
 .product-box-cart {

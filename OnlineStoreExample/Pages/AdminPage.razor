@@ -5,6 +5,7 @@
 
 @inject ICategory categoryData
 @inject IProduct productData
+@inject IOrder orderData
 @inject IConfiguration config
 @inject IEmailSender emailSender
 
@@ -19,181 +20,367 @@
     body {
         background: -webkit-linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
         background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+        height: 100vh;
     }
 </style>
+<div class="tabs">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <button class="button-admin add-button @(tabCatalog? "active": "")" role="button" @onclick="()=>SwitchTabs(1)">
+                <span> <i class="cat-icon"></i>Каталог</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="button-admin add-button @(tabOrders? "active": "")" role="button" @onclick="()=>SwitchTabs(2)">
+                <span> <i class="cat-icon"></i>Заказы</span>
+            </button>
+        </li>
+    </ul>
+</div>
+@if (tabCatalog)
+{
+    <section style="display:flex">
+        <div class="filter">
+            <div class="tbl-header">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th class="first-column">Фильтр</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="tbl-content" style="height: 21.1rem">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-id">Id:</label>
+                            </td>
+                            <td>
+                                <div class="price-input">
+                                    <div class="field">
+                                        <span>От</span>
+                                        <input type="number" class="input-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div class="field">
+                                        <span>До</span>
+                                        <input type="number" class="input-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
+                                    </div>
+                                </div>
+                                <div class="slider">
+                                    <div class="progress" style="left: @GetPercent(GetMaxId(), GetMinId(), FilterIdMin); right: @GetPercent(GetMaxId(), GetMinId(), FilterIdMax, true)"></div>
+                                </div>
+                                <div class="filter-item range-input">
+                                    <input type="range" class="range-min" id="filter-id-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
+                                    <input type="range" class="range-max" id="filter-id-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-name">Название:</label>
+                            </td>
+                            <td>
+                                <div class="filter-item">
+                                    <input type="text" id="filter-name" @bind-value="filterName">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-price">Цена:</label>
+                            </td>
+                            <td>
+                                <div class="price-input">
+                                    <div class="field">
+                                        <span>От</span>
+                                        <input type="number" class="input-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div class="field">
+                                        <span>До</span>
+                                        <input type="number" class="input-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
+                                    </div>
+                                </div>
+                                <div class="slider">
+                                    <div class="progress" style="left: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMin); right: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMax, true)"></div>
+                                </div>
+                                <div class="filter-item range-input">
+                                    <input type="range" class="range-min" id="filter-price-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
+                                    <input type="range" class="range-max" id="filter-price-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-category">Категория:</label>
+                            </td>
+                            <td>
+                                <div class="filter-item">
+                                    <select id="filter-category" @bind="filterCategory">
+                                        <option value="Все">Все</option>
+                                        <option value="Десктопные приложения">Десктопные приложения</option>
+                                        <option value="Мобильные приложения">Мобильные приложения</option>
+                                        <option value="Web-приложения">Web-приложения</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Товаров: @filteredProducts.Count
+                            </td>
+                            <td>
+                                <button class="filter-button" @onclick="Filter">Применить</button>
+                                <button class="filter-button" @onclick="DropFilter">Сбросить</button>
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-<h1 class="admin-header">Страница Админа</h1>
-
-<section style="display:flex">
-    <div class="filter">
+        <div class="admin-buttons">
+            <div>
+                <div>
+                    <a class="button-admin add-button" href="/product/add" role="button">
+                        <span>
+                            <i class="oi oi-plus cat-icon"></i> Добавить приложение
+                        </span>
+                    </a>
+                    <button class="button-admin add-button" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
+                    </button>
+                    <button class="button-admin add-button" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
         <div class="tbl-header">
-             <table cellpadding="0" cellspacing="0" border="0">
+            <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
                     <tr>
-                        <th class="first-column">Фильтр</th>
+                        <th style="width: 5%">Id</th>
+                        <th style="width: 20%">Название</th>
+                        <th style="width: 30%">Описание</th>
+                        <th style="width: 12%">Категория</th>
+                        <th style="width: 10%">Цена</th>
+                        <th style="width: 13%">Картинка</th>
+                        <th style="width: 10%"></th>
                     </tr>
                 </thead>
             </table>
         </div>
-        <div class="tbl-content" style="height: 21.1rem">
-        <table cellpadding="0" cellspacing="0" border="0">
-            <tbody>
-                <tr>
-                    <td class="first-column">
-                         <label for="filter-id">Id:</label>
-                    </td>
-                    <td>
-                            <div class="price-input">
-                                <div class="field">
-                                    <span>От</span>
-                                    <input type="number" class="input-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    @foreach (var p in filteredProducts.ToList())
+                    {
+                        <tr>
+                            <td style="width: 5%">@p.Id</td>
+                            <td style="width: 20%">@p.Name</td>
+                            <td style="width: 30%">@p.Description</td>
+                            <td style="width: 12%">@p.Category</td>
+                            <td style="width: 10%">@p.Price</td>
+                            <td style="width: 13%">
+                                <img src="@p.Image" width="200" />
+                            </td>
+                            <td style="width: 10%">
+                                <div class="control-buttons">
+                                    <a class="button-admin" href="/product/edit/@p.Id" role="button">
+                                        <span> <i class="oi oi-pencil cat-icon"></i> Изменить</span>
+                                    </a>
+                                    <button id="delete" class="button-admin" @onclick="@(e => DeleteProduct(p))" role="button">
+                                        <span> <i class="oi oi-trash cat-icon"></i> Удалить</span>
+                                    </button>
                                 </div>
-                                <div class="separator"></div>
-                                <div class="field">
-                                    <span>До</span>
-                                    <input type="number" class="input-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
-                                </div>
-                            </div>
-                            <div class="slider">
-                                <div class="progress" style="left: @GetPercent(GetMaxId(), GetMinId(), FilterIdMin); right: @GetPercent(GetMaxId(), GetMinId(), FilterIdMax, true)"></div>
-                            </div>
-                            <div class="filter-item range-input">
-                                <input type="range" class="range-min" id="filter-id-min" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMin">
-                                <input type="range" class="range-max" id="filter-id-max" min="@GetMinId()" max="@GetMaxId()" step="1" @bind-value="FilterIdMax">
-                            </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="first-column">
-                        <label for="filter-name" >Название:</label>
-                    </td>
-                    <td>
-                        <div class="filter-item">
-                            <input type="text" id="filter-name" @bind-value="filterName">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="first-column">
-                        <label for="filter-price">Цена:</label>
-                    </td>
-                    <td>
-                        <div class="price-input">
-                            <div class="field">
-                                <span>От</span>
-                                <input type="number" class="input-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
-                            </div>
-                            <div class="separator"></div>
-                            <div class="field">
-                                <span>До</span>
-                                <input type="number" class="input-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
-                            </div>
-                        </div>
-                        <div class="slider">
-                            <div class="progress" style="left: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMin); right: @GetPercent(GetMaxPrice(), GetMinPrice(), FilterPriceMax, true)"></div>
-                        </div>
-                        <div class="filter-item range-input">
-                            <input type="range" class="range-min" id="filter-price-min" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMin">
-                            <input type="range" class="range-max" id="filter-price-max" min="@GetMinPrice()" max="@GetMaxPrice()" step="10" @bind-value="FilterPriceMax">
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                        <td class="first-column">
-                        <label for="filter-category">Категория:</label>
-                    </td>
-                    <td>
-                        <div class="filter-item">
-                            <select id="filter-category" @bind="filterCategory">
-                                <option value="Все">Все</option>
-                                <option value="Десктопные приложения">Десктопные приложения</option>
-                                <option value="Мобильные приложения">Мобильные приложения</option>
-                                <option value="Web-приложения">Web-приложения</option>
-                            </select>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Товаров: @filteredProducts.Count
-                    </td>
-                    <td>
-                        <button class="filter-button" @onclick="Filter">Применить</button>
-                        <button class="filter-button" @onclick="DropFilter">Сбросить</button>
-                    </td>
-                </tr>
-                <tr>
-                </tr>
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-    </div>
-
-    <div class="admin-buttons">
-        <div>
-            <div>
-                <a class="button-admin add-button" href="/product/add" role="button">
-                    <span>
-                        <i class="oi oi-plus cat-icon"></i> Добавить приложение
-                    </span>
-                </a>
-                <button class="button-admin add-button" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
-                    <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
-                </button>
-                <button class="button-admin add-button" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
-                    <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
-                </button>
+    </section>
+}
+else if (tabOrders)
+{
+    <section style="display:flex">
+        <div class="filter">
+            <div class="tbl-header">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <thead>
+                        <tr>
+                            <th class="first-column">Фильтр</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="tbl-content" style="height: 21.1rem">
+                <table cellpadding="0" cellspacing="0" border="0">
+                    <tbody>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-id">Id:</label>
+                            </td>
+                            <td>
+                                <div class="price-input">
+                                    <div class="field">
+                                        <span>От</span>
+                                        <input type="number" class="input-min" min="@GetMinOrderId()" max="@GetMaxOrderId()" step="1" @bind-value="FilterOrderIdMin">
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div class="field">
+                                        <span>До</span>
+                                        <input type="number" class="input-max" min="@GetMinOrderId()" max="@GetMaxOrderId()" step="1" @bind-value="FilterOrderIdMax">
+                                    </div>
+                                </div>
+                                <div class="slider">
+                                    <div class="progress" style="left: @GetPercent(GetMaxOrderId(), GetMinOrderId(), FilterOrderIdMin); right: @GetPercent(GetMaxOrderId(), GetMinOrderId(), FilterOrderIdMax, true)"></div>
+                                </div>
+                                <div class="filter-item range-input">
+                                    <input type="range" class="range-min" id="filter-id-min" min="@GetMinOrderId()" max="@GetMaxOrderId()" step="1" @bind-value="FilterOrderIdMin">
+                                    <input type="range" class="range-max" id="filter-id-max" min="@GetMinOrderId()" max="@GetMaxOrderId()" step="1" @bind-value="FilterOrderIdMax">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-name">Имя заказчика:</label>
+                            </td>
+                            <td>
+                                <div class="filter-item">
+                                    <input type="text" id="filter-name" @bind-value="filterOrderName">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-price">Сумма:</label>
+                            </td>
+                            <td>
+                                <div class="price-input">
+                                    <div class="field">
+                                        <span>От</span>
+                                        <input type="number" class="input-min" min="@GetMinOrderPrice()" max="@GetMaxOrderPrice()" step="10" @bind-value="FilterOrderPriceMin">
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div class="field">
+                                        <span>До</span>
+                                        <input type="number" class="input-max" min="@GetMinOrderPrice()" max="@GetMaxOrderPrice()" step="10" @bind-value="FilterOrderPriceMax">
+                                    </div>
+                                </div>
+                                <div class="slider">
+                                    <div class="progress" style="left: @GetPercent(GetMaxOrderPrice(), GetMinOrderPrice(), FilterOrderPriceMin); right: @GetPercent(GetMaxOrderPrice(), GetMinOrderPrice(), FilterOrderPriceMax, true)"></div>
+                                </div>
+                                <div class="filter-item range-input">
+                                    <input type="range" class="range-min" id="filter-price-min" min="@GetMinOrderPrice()" max="@GetMaxOrderPrice()" step="10" @bind-value="FilterOrderPriceMin">
+                                    <input type="range" class="range-max" id="filter-price-max" min="@GetMinOrderPrice()" max="@GetMaxOrderPrice()" step="10" @bind-value="FilterOrderPriceMax">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="first-column">
+                                <label for="filter-category">Статус:</label>
+                            </td>
+                            <td>
+                                <div class="filter-item">
+                                    <select id="filter-category" @bind="filterOrderStatus">
+                                        <option value="Все">Все</option>
+                                        <option value="На проверке">На проверке</option>
+                                        <option value="Выполняется">Выполняется</option>
+                                        <option value="Выполнен">Выполнен</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Заказов: @filteredOrders.Count
+                            </td>
+                            <td>
+                                <button class="filter-button" @onclick="FilterOrders">Применить</button>
+                                <button class="filter-button" @onclick="DropFilterOrders">Сбросить</button>
+                            </td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-</section>
-<section>
-    <div class="tbl-header">
-        <table cellpadding="0" cellspacing="0" border="0">
-            <thead>
-                <tr>
-                    <th style="width: 5%">Id</th>
-                    <th style ="width: 20%">Название</th>
-                    <th style ="width: 30%">Описание</th>
-                    <th style="width: 12%">Категория</th>
-                    <th style="width: 10%">Цена</th>
-                    <th style="width: 13%">Картинка</th>
-                    <th style="width: 10%"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="tbl-content">
-        <table cellpadding="0" cellspacing="0" border="0">
-            <tbody>
-                @foreach (var p in filteredProducts.ToList())
-                    {
+
+        <div class="admin-buttons">
+            <div>
+                <div>
+@*                    <a class="button-admin add-button" href="/product/add" role="button">
+                        <span>
+                            <i class="oi oi-plus cat-icon"></i> Добавить приложение
+                        </span>
+                    </a>
+                    <button class="button-admin add-button" role="button" @onclick="@(e => ExportToXml())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в XML</span>
+                    </button>
+                    <button class="button-admin add-button" role="button" @onclick="@(e => ExportToExcel())" disabled="@isSending">
+                        <span> <i class="oi oi-envelope-closed cat-icon"></i> Экспортировать в Excel</span>
+                    </button>
+*@              </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="tbl-header">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
                     <tr>
-                        <td style ="width: 5%">@p.Id</td>
-                        <td style="width: 20%">@p.Name</td>
-                        <td style="width: 30%">@p.Description</td>
-                        <td style="width: 12%">@p.Category</td>
-                        <td style="width: 10%">@p.Price</td>
-                        <td style="width: 13%">
-                            <img src="@p.Image" width="200" />
-                        </td>
-                        <td style="width: 10%">
-                            <div class="control-buttons">
-                                <a class="button-admin" href="/product/edit/@p.Id" role="button">
-                                    <span> <i class="oi oi-pencil cat-icon"></i> Изменить</span>
-                                    </a>
-                                <button id="delete" class="button-admin" @onclick="@(e => DeleteProduct(p))" role="button">
-                                    <span> <i class="oi oi-trash cat-icon"></i> Удалить</span>
-                                </button>
-                            </div>
-                        </td>
+                        <th style="width: 5%">Id</th>
+                        <th style="width: 20%">Email</th>
+                        <th style="width: 40%">Товары</th>
+                        <th style="width: 15%">Статус</th>
+                        <th style="width: 10%">Сумма</th>
+                        <th style="width: 10%"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    @*}*@
-</section>
+                </thead>
+            </table>
+        </div>
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    @foreach (var o in filteredOrders.ToList())
+                    {
+                        <tr>
+                            <td style="width: 5%">@o.Id</td>
+                            <td style="width: 20%">@o.UserEmail</td>
+                            <td style="width: 40%">@foreach(var p in o.Products)
+                                {
+                                    <p>@p.Name</p>
+                                }
+                            </td>
+                            <td style="width: 15%">@o.OrderStatus</td>
+                            <td style="width: 10%">@o.Products.Sum(p => p.Price)</td>
+                            <td style="width: 10%">
+                                <div class="control-buttons">
+                                    <button @onclick='() => ChangeOrderStatus(o, "Выполняется")' class="button-admin" role="button" disabled='@(o.OrderStatus == "Выполнен" || o.OrderStatus == "Выполняется")'>
+                                        <span> <i class="oi oi-check cat-icon"></i>Выполняется</span>
+                                    </button>
+                                    <button @onclick='() => ChangeOrderStatus(o, "Выполнен")' class="button-admin" role="button" disabled='@(o.OrderStatus == "Выполнен")'>
+                                        <span> <i class="oi oi-check cat-icon"></i>Выполнен</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}
 <div class="mobile-overlay">
     <h1>Страница недоступна в мобильном виде</h1>
     <a class="button-bordered" href="/" role="button">

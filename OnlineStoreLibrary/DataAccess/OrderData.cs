@@ -9,11 +9,33 @@ namespace OnlineStoreLibrary.DataAccess
       {
          _dbContext = dbContext;
       }
-      public async Task<List<OrderModel>> GetOrdersAsync(string id)
+      public async Task<List<OrderModel>> GetOrdersByIdAsync(string id)
       {
          try
          {
-            return await _dbContext.Order.Where(c => c.UserId == id.ToString()).ToListAsync();
+            return await _dbContext.Order.Where(c => c.UserId == id).ToListAsync();
+         }
+         catch
+         {
+            throw;
+         }
+      }
+      public async Task<List<OrderModel>> GetOrdersByEmailAsync(string email)
+      {
+         try
+         {
+            return await _dbContext.Order.Where(c => c.UserEmail == email).ToListAsync();
+         }
+         catch
+         {
+            throw;
+         }
+      }
+      public async Task<List<OrderModel>> GetAllOrdersAsync()
+      {
+         try
+         {
+            return await _dbContext.Order.ToListAsync();
          }
          catch
          {

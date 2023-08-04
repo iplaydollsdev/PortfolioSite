@@ -25,14 +25,6 @@
     <Category>Десктопные приложения</Category>
   </ProductModel>
   <ProductModel>
-    <Id>4</Id>
-    <Name>Космические захватчики</Name>
-    <Description>Ну типо игрушка такая</Description>
-    <Image>./images/productimages/caaieq4u.png</Image>
-    <Price>459.00</Price>
-    <Category>Десктопные приложения</Category>
-  </ProductModel>
-  <ProductModel>
     <Id>9</Id>
     <Name>Лучший разработчик на свете!</Name>
     <Description>Он адын такой!!!</Description>

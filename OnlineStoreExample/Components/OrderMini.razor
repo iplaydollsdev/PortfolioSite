@@ -32,10 +32,10 @@
             </table>
         </div>
         <div class="product-nd">
-            <div class="product-price-cart"><h4 class="admin-header">Заказ:</h4><h4 class="admin-header">@Id</h4></div>
+            <div class="product-price-cart"><h4 class="admin-header">Заказ:</h4><h4 class="admin-header">@Order.Id</h4></div>
         </div>
         <div class="product-nd">
-            <div class="product-price-cart"><h4 class="admin-header">Статус:</h4><h4 class ="admin-header">@Status</h4></div>
+            <div class="product-price-cart"><h4 class="admin-header">Статус:</h4><h4 class ="admin-header">@Order.OrderStatus</h4></div>
         </div>
     </div>
 }
@@ -47,9 +47,6 @@ else
 @code{
     [Parameter]
     public int Id { get; set; }
-
-    [Parameter]
-    public string? Status { get; set; }
 
     [Parameter]
     public OrderModel? Order { get; set; }

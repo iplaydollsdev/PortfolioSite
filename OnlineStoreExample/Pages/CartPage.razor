@@ -69,7 +69,7 @@
             {
                 var _userId = await userManager.GetUserIdAsync(_user);
                 cart = await cartData.GetCartAsync(_userId!);
-                orders = await orderData.GetOrdersAsync(_userId!);
+                orders = await orderData.GetOrdersByIdAsync(_userId!);
                 if (cart == null)
                 {
                     var newCart = new CartModel() { UserId = _userId };
@@ -79,6 +79,7 @@
                 if (orders.Count > 0)
                 {                   
                 }
+                var i = user.Identity.Name;
             }
         }
         else
@@ -102,20 +103,25 @@
     {
         if (cart is not null)
         {
-            var newOrder = new OrderModel() { UserId = cart.UserId };
-
-            await orderData.CreateOrderAsync(newOrder);
-            var allOrders = await orderData.GetOrdersAsync(cart.UserId);
-            var madeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id); 
-            foreach (var p in cart.Products)
+            var user = await userManager.FindByIdAsync(cart.UserId);
+            if (user is not null)
             {
-                madeOrder.Products.Add(p);
-                await orderData.UpdateOrderAsync(madeOrder);
+                var userName = user.UserName;
+                var newOrder = new OrderModel() { UserId = cart.UserId,
+                                                  UserEmail = userName!};
+
+                await orderData.CreateOrderAsync(newOrder);
+                var allOrders = await orderData.GetOrdersByIdAsync(cart.UserId);
+                var madeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id);
+                foreach (var p in cart.Products)
+                {
+                    madeOrder.Products.Add(p);
+                    await orderData.UpdateOrderAsync(madeOrder);
+                }
+                cart.Products.Clear();
+                await cartData.UpdateCartAsync(cart);
+                StateHasChanged();
             }
-            cart.Products.Clear();
-            await cartData.UpdateCartAsync(cart);
-            StateHasChanged();
-            var anotherMadeOrder = await orderData.GetOrderAsync(allOrders[allOrders.Count - 1].Id);
         }
     }
 
