@@ -5,7 +5,7 @@
 @inject UserManager<UserModel> userManager
 @inject IJSRuntime JSRuntime
 
-<PageTitle>Каталог</PageTitle>
+@*<PageTitle>Каталог</PageTitle>*@
 
 
 <!-- banner bg main start -->
@@ -30,13 +30,13 @@
                     <div style="position: relative; z-index:0">
                         <form class="search" onsubmit="event.preventDefault()" onkeydown="OnSearch">
                             <div class="dropdown category-select">
-                                <select class="dropdown-toggle" id="category" @bind="selectedCategoryInSearch">
-                                    <option class="dropdown-item">Везде</option>
+                                <InputSelect class="dropdown-toggle" id="category" @bind-Value="selectedCategoryInSearch">
+                                    <option value="" class="dropdown-item">Везде</option>
                                     @foreach (var c in categories)
                                     {
                                         <option class="dropdown-item" value="@c.CategoryName">@c.CategoryName</option>
                                     }
-                                </select>
+                                </InputSelect>
                             </div>
 
                             <div class="input-group" style="width:100%">
