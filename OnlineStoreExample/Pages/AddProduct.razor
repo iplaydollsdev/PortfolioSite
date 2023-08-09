@@ -22,21 +22,21 @@
         <div class="mb-3">
             <label for="Name" class="form-label">Название</label>
             <div class="col-md-6">
-                <InputText class="form-control" @bind-Value="product.Name" @onfocusout="OnChangeCheck" />
+                <InputText id="Name" class="form-control" @bind-Value="product.Name" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Name)"/>
         </div>
         <div class="mb-3">
             <label for="Description" class="form-label">Описание</label>
             <div class="col-md-6">
-                <InputTextArea class="form-control" @bind-Value="product.Description" @onfocusout="OnChangeCheck" />
+                <InputTextArea id="Description" class="form-control" @bind-Value="product.Description" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Description)" />
         </div>
         <div class="mb-3">
             <label for="Price" class="form-label">Цена</label>
             <div class="col-md-6">
-            <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" @onfocusout="OnChangeCheck" />
+                <InputNumber id="Price" class="form-control" @bind-Value="product.Price" step="0.01" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Price)" />
         </div>
