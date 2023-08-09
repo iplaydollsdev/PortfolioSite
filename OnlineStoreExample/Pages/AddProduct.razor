@@ -36,7 +36,7 @@
         <div class="mb-3">
             <label for="Price" class="form-label">Цена</label>
             <div class="col-md-6">
-                <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" @onfocusout="OnChangeCheck" />
+            <InputNumber class="form-control" @bind-Value="product.Price" step="0.01" @onfocusout="OnChangeCheck" />
             </div>
             <ValidationMessage For="@(() => product.Price)" />
         </div>

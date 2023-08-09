@@ -16,7 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
+                    <div class="logo"><a href="/"><img src="images/logo_banner.png" alt="logo"></a></div>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                         <form class="search" onsubmit="event.preventDefault()" onkeydown="OnSearch">
                             <div class="dropdown category-select">
                                 <select class="dropdown-toggle" id="category" @bind="selectedCategoryInSearch">
-                                    <option class="dropdown-item" value=""><span>Везде</span></option>
+                                    <option class="dropdown-item">Везде</option>
                                     @foreach (var c in categories)
                                     {
                                         <option class="dropdown-item" value="@c.CategoryName">@c.CategoryName</option>
@@ -97,17 +97,17 @@
     <div class="category-tabs container-fluid">
         <div class="row">
             <div class="col category-item">
-                <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Десктопные приложения"))'>
+                <button class="@((selectedCategory == "Десктопные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" @onclick='(() => SelectCategory("Десктопные приложения"))'>
                     <span> <i class="oi oi-monitor cat-icon"></i> Десктопные приложения</span>
                 </button>
             </div>
             <div class="col category-item">
-                <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Мобильные приложения"))'>
+                <button class="@((selectedCategory == "Мобильные приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" @onclick='(() => SelectCategory("Мобильные приложения"))'>
                     <span> <i class="oi oi-phone cat-icon"></i> Мобильные приложения</span>
                 </button>
             </div>
             <div class="col category-item">
-                <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" role="button" @onclick='(() => SelectCategory("Web-приложения"))'>
+                <button class="@((selectedCategory == "Web-приложения") ? "button-bordered btn-category active" : "button-bordered btn-category")" @onclick='(() => SelectCategory("Web-приложения"))'>
                     <span> <i class="oi oi-globe cat-icon"></i> Web-приложения</span>
                 </button>
             </div>
@@ -134,7 +134,7 @@
 <!-- footer section start -->
 <div class="footer_section">
     <div class="container">
-        <div class="footer_logo"><a href="/"><img src="images/logo_banner.png" alt="logo" cache-control="public, max-age=14400"></a></div>
+        <div class="footer_logo"><a href="/"><img src="images/logo_banner.png" alt="logo"></a></div>
         <div class="footer_menu">
             <ul>
                 <li>
