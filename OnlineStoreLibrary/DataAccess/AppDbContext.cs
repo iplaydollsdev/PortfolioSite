@@ -31,7 +31,7 @@ namespace OnlineStoreLibrary.DataAccess
             .HasKey(c => c.Id);
 
          modelBuilder.Entity<OrderModel>()
-            .ToTable("order")
+            .ToTable("orders")
             .HasKey(o => o.Id);
 
          modelBuilder.Entity<ProductModel>()

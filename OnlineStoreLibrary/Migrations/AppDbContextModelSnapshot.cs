@@ -288,7 +288,7 @@ namespace OnlineStoreLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("order", (string)null);
+                    b.ToTable("orders", (string)null);
                 });
 
             modelBuilder.Entity("OnlineStoreLibrary.Models.OrderProductModel", b =>

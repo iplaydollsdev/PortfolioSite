@@ -12,8 +12,8 @@ using OnlineStoreLibrary.DataAccess;
 namespace OnlineStoreLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230804104936_AddEmailToOrders")]
-    partial class AddEmailToOrders
+    [Migration("20231014184434_LastCheck")]
+    partial class LastCheck
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -291,7 +291,32 @@ namespace OnlineStoreLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("order", (string)null);
+                    b.ToTable("orders", (string)null);
+                });
+
+            modelBuilder.Entity("OnlineStoreLibrary.Models.OrderProductModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderModelId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderModelId");
+
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("OnlineStoreLibrary.Models.ProductModel", b =>
@@ -323,17 +348,12 @@ namespace OnlineStoreLibrary.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("OrderModelId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CartModelId");
-
-                    b.HasIndex("OrderModelId");
 
                     b.ToTable("products", (string)null);
                 });
@@ -399,15 +419,18 @@ namespace OnlineStoreLibrary.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("OnlineStoreLibrary.Models.OrderProductModel", b =>
+                {
+                    b.HasOne("OnlineStoreLibrary.Models.OrderModel", null)
+                        .WithMany("Products")
+                        .HasForeignKey("OrderModelId");
+                });
+
             modelBuilder.Entity("OnlineStoreLibrary.Models.ProductModel", b =>
                 {
                     b.HasOne("OnlineStoreLibrary.Models.CartModel", null)
                         .WithMany("Products")
                         .HasForeignKey("CartModelId");
-
-                    b.HasOne("OnlineStoreLibrary.Models.OrderModel", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderModelId");
                 });
 
             modelBuilder.Entity("OnlineStoreLibrary.Models.CartModel", b =>
